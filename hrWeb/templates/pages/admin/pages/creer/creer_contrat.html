@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un contrat</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Créer un contrat</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="salarie">Salarié</label>
+                <select class="form-control" id="salarie" name="salarie" required>
+                    {% for salarie in salaries %}
+                        <option value="{{ salarie.id }}">{{ salarie.nom }} {{ salarie.prenom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="entreprise">Entreprise</label>
+                <select class="form-control" id="entreprise" name="entreprise" required>
+                    {% for entreprise in entreprises %}
+                        <option value="{{ entreprise.id }}">{{ entreprise.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date_debut">Date de début</label>
+                <input type="date" class="form-control" id="date_debut" name="date_debut" required>
+            </div>
+            <div class="form-group">
+                <label for="date_fin">Date de fin</label>
+                <input type="date" class="form-control" id="date_fin" name="date_fin" required>
+            </div>
+            <div class="form-group">
+                <label for="type_contrat">Type de contrat</label>
+                <input type="text" class="form-control" id="type_contrat" name="type_contrat" required>
+            </div>
+            <div class="form-group">
+                <label for="mode_paiement">Mode de paiement</label>
+                <select class="form-control" id="mode_paiement" name="mode_paiement" required>
+                    <option value="H">Heure</option>
+                    <option value="J">Jour</option>
+                    <option value="M">Mois</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="taux_horaire">Taux horaire</label>
+                <input type="number" class="form-control" id="taux_horaire" name="taux_horaire">
+            </div>
+            <div class="form-group">
+                <label for="heures_travail">Heures de travail</label>
+                <input type="number" class="form-control" id="heures_travail" name="heures_travail">
+            </div>
+            <div class="form-group">
+                <label for="jours_travail">Jours de travail</label>
+                <input type="number" class="form-control" id="jours_travail" name="jours_travail">
+            </div>
+            <div class="form-group">
+                <label for="salaire_mensuel">Salaire mensuel</label>
+                <input type="number" class="form-control" id="salaire_mensuel" name="salaire_mensuel">
+            </div>
+            <button type="submit" class="btn btn-primary">Créer le contrat</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
