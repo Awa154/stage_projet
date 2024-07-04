@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from .models import Compte, Contrat, Entreprise, FicheDePaie, Admin, Departement, Salarie
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 import random
 import string
 # Create your views here.
@@ -11,9 +13,61 @@ import string
 def success(request):
     return HttpResponse("L'action a été mener avec succès!")
 
-#Fonction pour retourner la vue vers la page d'accueil
+#Fonction pour retourner la vue vers la page d'accueil de l'admin
 def home(request):
+    return render(request,'pages/home/home.html')
+
+#Fonction pour retourner la vue vers la page d'accueil de l'admin
+def home_admin(request):
     return render(request,'pages/admin/pages/dashboard/home.html')
+
+#Fonction pour retourner la vue vers la page d'accueil
+def home_salarie(request):
+    return render(request,'pages/salarie/dashboard/home.html')
+
+#Fonction pour retourner la vue vers la page d'accueil
+def home_entreprise(request):
+    return render(request,'pages/entreprise/dashboard/home.html')
+
+#Fonction de connexion
+def login(request):
+    if request.method == "POST":
+        nom_utilisateur = request.POST.get('nom_utilisateur')
+        mot_de_passe = request.POST.get('mot_de_passe')
+        # Récupérer l'utilisateur avec le nom d'utilisateur donné
+        try:
+            user = Compte.objects.get(nom_utilisateur=nom_utilisateur)
+            
+            if user.statut == 'inactif':
+                messages.error(request, "Votre compte est désactivé.")
+                return render(request, "pages/auth/pages/login.html")
+            
+            if check_password(mot_de_passe, user.mot_de_passe):
+                # Créer une session pour l'utilisateur
+                request.session['user_id'] = user.id
+                # Redirection basée sur le type d'utilisateur
+                if user.type_utilisateur == "AD":
+                    return redirect('home_admin')  # Rediriger vers la page d'administration
+                elif user.type_utilisateur == "SAL":
+                    return redirect('home_salarie')  # Rediriger vers la page salarié
+                elif user.type_utilisateur == "EN":
+                    return redirect('home_entreprise')  # Rediriger vers la page entreprise
+                messages.success(request, "Vous êtes maintenant connecté!")
+            else:
+                messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+        except Compte.DoesNotExist:
+            messages.error(request, "Nom d'utilisateur ou mot de passe inexistent.")
+
+    return render(request, "pages/auth/pages/login.html")
+
+#Fonction de déconnexion
+def logout(request):
+    # Supprimez la session de l'utilisateur
+    if 'user_id' in request.session:
+        del request.session['user_id']
+    messages.success(request, "Vous avez été déconnecté.")
+    return redirect('home')
+
 
 #Vue permettant de générer automatiquement les mots de passes
 def generer_mot_de_passe():
