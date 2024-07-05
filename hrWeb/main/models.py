@@ -1,14 +1,22 @@
 from django.db import models
 
+
+class Departement(models.Model):
+    nom_dep = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nom_dep
+    
+class Role(models.Model):
+    nom_role = models.CharField(max_length=50)
+    niv_permission=models.IntegerField()
+    departement = models.ForeignKey(Departement, on_delete=models.SET_NULL, null=True, blank=True)
+
+
 class Compte(models.Model):
     SEXE_CHOICES = (
         ('H', 'Homme'),
         ('F', 'Femme'),
-    )
-    TYPE_CHOICES = (
-        ('AD', 'Admin'),
-        ('EM', 'Employe'),
-        ('EN', 'Entreprise'),
     )
     STATUT_CHOICES = (
         ('actif', 'Actif'),
@@ -20,7 +28,8 @@ class Compte(models.Model):
     email = models.EmailField(null=True, blank=True)
     adresse = models.CharField(max_length=100)
     telephone = models.CharField(max_length=20, null=True, blank=True)
-    type_utilisateur = models.CharField(max_length=2, choices=TYPE_CHOICES)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
+    photo_profile = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES)
 
     def __str__(self):
@@ -34,37 +43,30 @@ class Compte(models.Model):
             # envoyer identifiants par WhatsApp
             pass
 
-class Departement(models.Model):
-    nom_dep = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.nom_dep
-
 class Admin(models.Model):
-    nom = models.CharField(max_length=50)
-    prenom = models.CharField(max_length=100)
+    nom_admin = models.CharField(max_length=50)
+    prenom_admin = models.CharField(max_length=100)
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"
 
 class Entreprise(models.Model):
-    nom = models.CharField(max_length=100)
+    nom_entreprise = models.CharField(max_length=100)
     secteurActivite = models.CharField(max_length=100)
+    site_web = models.URLField(max_length=255, blank=True)
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
-    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.nom
 
 class Salarie(models.Model):
-    nom = models.CharField(max_length=50)
-    prenom = models.CharField(max_length=100)
+    nom_salarie = models.CharField(max_length=50)
+    prenom_salarie = models.CharField(max_length=100)
     dateNaissance = models.DateField()
     dateEmbauche = models.DateTimeField(auto_now_add=True)
-    annee_exp = models.IntegerField()
+    annee_exp = models.PositiveIntegerField(null=True)
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
-    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
     departement = models.ForeignKey(Departement, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):

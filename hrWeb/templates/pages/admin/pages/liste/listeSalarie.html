@@ -1,0 +1,44 @@
+{% extends 'layouts/basedashboardadmin.html' %}
+{% block content %}
+<div class="dash-content">
+    <div class="overview">
+    <div class="activity">
+        <div class="title">
+            <i class="uil uil-clock-three"></i>
+            <span class="text">Liste des salariés</span>
+        </div>
+        <div class="activity-data">
+            {% for salarie in salaries %}
+            <div class="data nom">
+                <span class="data-title">Nom</span>
+                <span class="data-list">{{ salarie.compte.nom }}</span>
+            </div>
+            <div class="data prenom">
+                <span class="data-title">Prenom</span>
+                <span class="data-list">{{ salarie.compte.prenom }}</span>
+            </div>
+            <div class="data email">
+                <span class="data-title">Email</span>
+                <span class="data-list">{{ salarie.compte.email }}</span>
+            </div>
+            <div class="data contact">
+                <span class="data-title">Contact</span>
+                <span class="data-list">{{ salarie.compte.contact }}</span>
+            </div>
+            <div class="data sexe">
+                <span class="data-title">Sexe</span>
+                <span class="data-list">{{ salarie.compte.sexe }}</span>
+            </div>
+            <div class="data date-embauche">
+                <span class="data-title">Date Embauche</span>
+                <span class="data-list">{{ salarie.compte.dateEmbauche }}</span>
+            </div>
+            <div class="data status">
+                <span class="data-title">Status</span>
+                <span class="data-list">{{ salarie.compte.statut }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

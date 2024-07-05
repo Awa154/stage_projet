@@ -34,10 +34,10 @@
         </label>
 
         <ul>
-        <li><a href="#">Accuiel</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">A propos</a></li>
-        <li><a href="#">Se connecter</a></li>
+        <li><a href="#home">Accuiel</a></li>
+        <li><a href="#service">Services</a></li>
+        <li><a href="#about">A propos</a></li>
+        <li><a href="{% url 'login' %}">Se connecter</a></li>
         </ul>
     </nav>
     </header>
@@ -73,11 +73,11 @@
         <div class="text_section">
             <h2 class="section_title">A propos de nous</h2>
             <p>
-                Notre plateforme de gestion des ressources humaines
-                 offre une solution complète pour les entreprises et
-                  leurs partenaires, permettant une administration 
-                  efficace et structurée des employés, des départements 
-                  et des contrats de travail
+            Notre plateforme de gestion des ressources humaines
+                offre une solution complète pour les entreprises et
+                leurs partenaires, permettant une administration 
+                efficace et structurée des employés, des départements 
+                et des contrats de travail
             </p>
         </div>
 
@@ -118,6 +118,13 @@
                 <p>Besoin de main d'oeuvre? Nous avons ce qu'il vous faut.</p>
                 </div>
             </div>
+            <div class="services_items">
+                <img src="{% static 'assets/image/job-search.png' %}">
+                <div class="services_text">
+                <h3>Embauche</h3>
+                <p>Vous êtes à la recherche d'un emploi? Contactez-nous!</p>
+                </div>
+            </div>
         </div>
     </div>
     </section>
@@ -137,7 +144,7 @@
             </div>
         </div>
         <div class="why_items">
-            <img src="{% static 'assets/image/logo.png' %}">
+            <img src="{% static 'assets/image/selection.png' %}">
             <div class="why_us_text">
             <h3>Interfaces intuitive</h3>
             <p>

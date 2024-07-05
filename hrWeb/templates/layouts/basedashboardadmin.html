@@ -27,15 +27,15 @@
 
         <div class="menu-items">
             <ul class="nav-links">
-                <li><a href="#">
+                <li><a href="{% url 'home_admin' %}">
                     <i class="uil uil-estate"></i>
                     <span class="link-name">Dahsboard</span>
                 </a></li>
-                <li><a href="#">
+                <li><a href="{% url 'liste_salarie' %}">
                     <i class="uil uil-users-alt"></i>
                     <span class="link-name">Salariés</span>
                 </a></li>
-                <li><a href="#">
+                <li><a href="{% url 'liste_entreprise' %}">
                     <i class="uil uil-building"></i>
                     <span class="link-name">Partenaires</span>
                 </a></li>
@@ -70,7 +70,7 @@
                 </a>
 
                 <div class="mode-toggle">
-                  <span class="switch"></span>
+                    <span class="switch"></span>
                 </div>
             </li>
             </ul>

@@ -253,17 +253,22 @@ label .close_btn {
 .services .service_container {
     display: flex;
     justify-content: space-between;
-    gap: 120px;
+    gap: 80px;
     align-items: center;
     flex-wrap: wrap;
 }
 
 .section_container .services_items img {
-    width: 100%;
+    width: 30%;
 }
 
 .section_container .services_items {
-    width: calc(100% / 3 - 120px);
+    width: calc(100% / 2 - 120px);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .services_items .services_text {
@@ -319,36 +324,6 @@ label .close_btn {
 
 .why_items .why_us_text p {
     font-size: 17px;
-}
-
-/* Gallery Section */
-.gallery {
-    background: var(--white-color);
-    padding: 60px 20px 100px;
-}
-
-.gallery .gallery_container {
-    display: flex;
-    justify-content: space-between;
-    gap: 32px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.gallery_container .gallery_items {
-    width: calc(100% / 3 - 32px);
-    overflow: hidden;
-    border-radius: 8px;
-}
-
-.gallery .gallery_container img {
-    width: 100%;
-    border-radius: 8px;
-    transition: transform 0.4s ease;
-}
-
-.gallery_container .gallery_items:hover img {
-    transform: scale(1.3);
 }
 
 /* Contact Section */

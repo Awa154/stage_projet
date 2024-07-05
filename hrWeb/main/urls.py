@@ -14,14 +14,18 @@ urlpatterns = [
     path('login', login, name="login"),
     path('logout', logout, name="logout"),
     
-    #Route vers les méthodes gérer par l'admin et ses représentants
+    #Route vers les méthodes de création gérer par l'admin et ses représentants
     path('success', success, name="success"),
-    path('creer_admin', creer_admin, name="creer_admin"),
+    path('creer_role', creer_role, name="creer_role"),
+    path('creer_compte', creer_compte, name="creer_compte"),
     path('creer_departement', creer_departement, name="creer_departement"),
     path('creer_fichepaie', creer_fichepaie, name="creer_fichepaie"),
     path('creer_contrat', creer_contrat, name="creer_contrat"),
     path('ajouter_salarie', ajouter_salarie, name="ajouter_salarie"),
     path('ajouter_entreprise', ajouter_entreprise, name="ajouter_entreprise"),
     
+    #Route vers les méthodes pour gérer les affichages par l'admin et ses représentants
+    path('liste_salarie', liste_salarie, name="liste_salarie"),
+    path('liste_entreprise', liste_entreprise, name="liste_entreprise"), 
 ]
 

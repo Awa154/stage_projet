@@ -1,76 +1,204 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer un compte salarié</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2>Créer un compte salarié</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="nom_utilisateur">Nom d'utilisateur</label>
-                <input type="text" class="form-control" id="nom_utilisateur" name="nom_utilisateur" required>
+{% extends 'layouts/baseForm.html' %}
+{% block content %}
+<div class="bg-white shadow-md rounded-lg p-8 mx-auto max-w-screen-md">
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="bg-gray-700 text-black text-center px-4 py-2 rounded shadow-md">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2 class="text-2xl font-bold mb-6 text-center">Créer un compte</h2>
+        <p class="mt-1 text-sm leading-6 text-gray-600">Veuillez remplir les informations suivantes pour créer un compte.</p>
+        <div class="mb-4 flex space-x-4">
+            <div class="w-1/2">
+                <label for="nom_utilisateur" class="block text-gray-700 font-bold">Nom d'utilisateur:</label>
+                <input type="text" name="nom_utilisateur" id="nom_utilisateur" class="w-full p-2 border border-gray-300 rounded mt-1" required>
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email">
+            <div class="w-1/2">
+                <label for="sexe" class="block text-gray-700 font-bold">Prenom:</label>
+                <input type="text" name="prenom" id="prenom" class="w-full p-2 border border-gray-300 rounded mt-1" required>
             </div>
-            <div class="form-group">
-                <label for="sexe">Sexe</label>
-                <select class="form-control" id="sexe" name="sexe" required>
-                    <option value="H">Homme</option>
-                    <option value="F">Femme</option>
-                </select>
+        </div>
+        <div class="mb-4 flex space-x-4">
+            <div class="w-3/4">
+                <label for="email" class="block text-gray-700 font-bold">Email:</label>
+                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-300 rounded mt-1" required>
             </div>
-            <div class="form-group">
-                <label for="telephone">Téléphone</label>
-                <input type="text" class="form-control" id="telephone" name="telephone">
+            <div class="w-1/4">
+                <label for="contact" class="block text-gray-700 font-bold">Contact:</label>
+                <input type="tel" name="contact" id="contact" class="w-full p-2 border border-gray-300 rounded mt-1" required>
             </div>
-            <div class="form-group">
-                <label for="nom">Nom</label>
-                <input type="text" class="form-control" id="nom" name="nom" required>
+        </div>
+        <div class="mb-4 flex space-x-4">
+            <div class="w-1/3">
+                <label for="adresse" class="block text-gray-700 font-bold">Adresse:</label>
+                <input type="text" name="adresse" id="adresse" class="w-full p-2 border border-gray-300 rounded mt-1" required>
             </div>
-            <div class="form-group">
-                <label for="prenom">Prénom</label>
-                <input type="text" class="form-control" id="prenom" name="prenom" required>
+            <div class="w-1/3">
+                <label for="ville" class="block text-gray-700 font-bold">Ville:</label>
+                <input type="text" name="ville" id="ville" class="w-full p-2 border border-gray-300 rounded mt-1">
             </div>
-            <div class="form-group">
-                <label for="adresse">Adresse</label>
-                <input type="text" class="form-control" id="adresse" name="adresse" required>
+            <div class="w-1/3">
+                <label for="pays" class="block text-gray-700 font-bold">Pays:</label>
+                <input type="text" name="pays" id="pays" class="w-full p-2 border border-gray-300 rounded mt-1">
             </div>
-            <div class="form-group">
-                <label for="date_naissance">Date de Naissance</label>
-                <input type="date" class="form-control" id="date_naissance" name="date_naissance" required>
+        </div>
+        <div class="mb-4 flex items-center">
+            <label for="role" class="block text-gray-700 font-bold mr-2">Rôle:</label>
+            <div class="flex space-x-4">
+                <div class="flex items-center">
+                    <input type="radio" name="role" value=AD class="mr-1">
+                    <label class="block text-gray-600 text-sm font-bold mr-2">Admin</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" name="role" value=EM class="mr-1">
+                    <label class="block text-gray-600 text-sm font-bold mr-2">Employé</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" name="role" value=EN class="mr-1">
+                    <label class="block text-gray-600 text-sm font-bold mr-2">Entreprise</label>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="annee_exp">Années d'expérience</label>
-                <input type="number" class="form-control" id="annee_exp" name="annee_exp" required>
+        </div>
+        <!-- Employé Fields -->
+        <div id="employe-fields" class="hidden">
+            <div class="mb-4 flex space-x-4">
+                <div class="w-2/4">
+                    <label for="domaine" class="block text-gray-700 font-bold">Domaine:</label>
+                    <input type="text" name="domaine" id="domaine" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="w-2/4">
+                    <div id="competences-container">
+                        <div class="mb-4 flex items-center">
+                            <label for="competence" class="block text-gray-700 font-bold">Compétences</label>
+                            <button type="button" id="add-competence" class="text-green-500 ml-2"><span class="material-symbols-outlined">
+                                add_circle
+                                </span></button>
+                        </div>
+                        <input type="text" name="competences" class="w-full p-2 border border-gray-300 rounded mt-1">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="departement">Département</label>
-                <select class="form-control" id="departement" name="departement" required>
-                    {% for departement in departements %}
-                        <option value="{{ departement.id }}">{{ departement.nom_dep }}</option>
-                    {% endfor %}
-                </select>
+            <div class="mb-4 flex space-x-4">
+                <div class="w-3/4">
+                    <label for="departement" class="block text-gray-700 font-bold">Département:</label>
+                    <input type="text" name="departement" id="departement" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="w-1/4">
+                    <label for="annee_exp" class="block text-gray-700 font-bold">Année d'expérience:</label>
+                    <input type="number" name="annee_exp" id="annee_exp" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="gestionnaire">Gestionnaire</label>
-                <select class="form-control" id="gestionnaire" name="gestionnaire" required>
-                    {% for gestionnaire in gestionnaires %}
-                        <option value="{{ gestionnaire.id }}">{{ gestionnaire.nom }} {{ gestionnaire.prenom }}</option>
-                    {% endfor %}
-                </select>
+        </div>
+
+        <!-- Admin Fields -->  
+        <div id="admin-fields" class="hidden">
+            <div class="mb-4 flex space-x-4">
+                <div class="w-1/2">
+                    <label for="departement" class="block text-gray-700 font-bold">Département:</label>
+                    <input type="text" name="departement" id="departement" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="w-1/2">
+                    <label for="poste_occupe" class="block text-gray-700 font-bold">Poste occupé:</label>
+                    <input type="text" name="poste_occupe" id="poste_occupe" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Créer le compte</button>
-        </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        </div>
+
+        <!-- Entreprise Fields -->
+        <div id="entreprise-fields" class="hidden">
+            <div class="mb-4">
+                <label for="logo" class="block text-gray-700 font-bold">Logo:</label>
+                <input type="file" name="logo" id="logo" class="w-full p-2 border border-gray-300 rounded mt-1">
+            </div>
+            <div class="mb-4">
+                <label for="site_web" class="block text-gray-700 font-bold">Site web:</label>
+                <input type="url" name="site_web" id="site_web" class="w-full p-2 border border-gray-300 rounded mt-1">
+            </div>
+            <div class="mb-4">
+                <label for="nom_entreprise" class="block text-gray-700 font-bold">Nom de l'entreprise:</label>
+                <input type="text" name="nom_entreprise" id="nom_entreprise" class="w-full p-2 border border-gray-300 rounded mt-1">
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 font-bold">Description:</label>
+                <textarea name="description" id="description" class="w-full p-2 border border-gray-300 rounded mt-1"></textarea>
+            </div>
+        </div>
+        <div class="mb-4 flex space-x-4">
+            <div class="w-1/2">
+                <label for="password" class="block text-gray-700 font-bold">Mot de passe:</label>
+                <input type="password" name="password" id="password" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+            </div>
+            <div class="w-1/2">
+                <label for="password_confirmation" class="block text-gray-700 font-bold">Confirmez le mot de passe:</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+            </div>
+        </div>
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+            <a href="#" class="rounded-md text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-400 py-2 px-4">
+                Annuler
+            </a>
+            <button type="submit" class="rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Enregistrer</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Gestion des champs de rôles
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleInputs = document.querySelectorAll('input[name="role"]');
+        const employeFields = document.getElementById('employe-fields');
+        const adminFields = document.getElementById('admin-fields');
+        const entrepriseFields = document.getElementById('entreprise-fields');
+
+        roleInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                employeFields.classList.add('hidden');
+                adminFields.classList.add('hidden');
+                entrepriseFields.classList.add('hidden');
+
+                if (this.value === 'EM') {
+                    employeFields.classList.remove('hidden');
+                } else if (this.value === 'AD') {
+                    adminFields.classList.remove('hidden');
+                } else if (this.value === 'EN') {
+                    entrepriseFields.classList.remove('hidden');
+                }
+            });
+        });
+    });
+
+    // Gestion des champs de compétence
+     document.addEventListener('DOMContentLoaded', function() {
+        const addcompetenceButton = document.getElementById('add-competence');
+        const competencesContainer = document.getElementById('competences-container');
+    
+        if (addcompetenceButton && competencesContainer) {
+            addcompetenceButton.addEventListener('click', function() {
+                const newcompetenceField = document.createElement('div');
+                newcompetenceField.className = 'mb-4 flex items-center';
+                newcompetenceField.innerHTML = `
+                    <input type="text" name="competences" class="w-full p-2 border border-gray-300 rounded mt-1">
+                    <button type="button" class="ml-2 text-red-500 remove-competence"><span class="material-symbols-outlined">
+cancel
+</span></button>
+                `;
+                competencesContainer.appendChild(newcompetenceField);
+    
+                newcompetenceField.querySelector('.remove-competence').addEventListener('click', function() {
+                    newcompetenceField.remove();
+                });
+            });
+        }
+    });
+    
+
+    // Ajouter la possibilité de supprimer les champs de compétence existants
+    
+</script>
+{% endblock content %}

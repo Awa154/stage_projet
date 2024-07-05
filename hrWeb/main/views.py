@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Compte, Contrat, Entreprise, FicheDePaie, Admin, Departement, Salarie
+
+from hrWeb.settings import EMAIL_HOST_USER
+from .models import Competence, Compte, Contrat, Entreprise, FicheDePaie, Admin, Departement, Role, Salarie
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 import random
 import string
+from django.db.models import Q
 # Create your views here.
 
 # Ajouter une vue de succès simple
@@ -46,11 +49,11 @@ def login(request):
                 # Créer une session pour l'utilisateur
                 request.session['user_id'] = user.id
                 # Redirection basée sur le type d'utilisateur
-                if user.type_utilisateur == "AD":
+                if user.role == "Admin":
                     return redirect('home_admin')  # Rediriger vers la page d'administration
-                elif user.type_utilisateur == "SAL":
+                elif user.role == "Salarié":
                     return redirect('home_salarie')  # Rediriger vers la page salarié
-                elif user.type_utilisateur == "EN":
+                elif user.role == "Entreprise partenaire":
                     return redirect('home_entreprise')  # Rediriger vers la page entreprise
                 messages.success(request, "Vous êtes maintenant connecté!")
             else:
@@ -74,6 +77,24 @@ def generer_mot_de_passe():
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for i in range(8))
 
+#Création de la vue pour créer un rôle
+def creer_role(request):
+    if request.method == 'POST':
+        nom_role = request.POST['nom_role']
+        niv_permission = request.POST['niv_permission']
+        departement_id = request.POST['departement']
+        departement = Departement.objects.get(id=departement_id)
+
+        role = Role.objects.create(
+            nom_role=nom_role,
+            niv_permission=niv_permission,
+            departement=departement
+        )
+        return redirect('success')
+    departements = Departement.objects.all()
+
+    return render(request, 'pages/admin/pages/creer/creer_role.html', {'departements': departements})
+
 #Création de la vue permettant de créer un admin
 def creer_admin(request):
     if request.method == 'POST':
@@ -82,6 +103,8 @@ def creer_admin(request):
         sexe = request.POST['sexe']
         adresse = request.POST['adresse']
         telephone = request.POST['telephone']
+        role_id = request.POST['role']
+        role = Role.objects.get(id=role_id)
         statut = 'actif'
         mot_de_passe = generer_mot_de_passe()
 
@@ -92,7 +115,7 @@ def creer_admin(request):
             sexe=sexe,
             adresse=adresse,
             telephone=telephone,
-            type_utilisateur='GES',
+            role=role,
             statut=statut
         )
 
@@ -117,9 +140,10 @@ def creer_admin(request):
         else:
             # Logique d'envoi par WhatsApp (à implémenter)
             pass
-
+        
+        roles = Role.objects.all()
         return redirect('success')
-    return render(request, 'pages/admin/pages/creer/creer_admin.html')
+    return render(request, 'pages/admin/pages/creer/creer_admin.html', {'roles': roles})
 
 #Création de la vue pour créer un département
 def creer_departement(request):
@@ -141,6 +165,8 @@ def ajouter_salarie(request):
         adresse = request.POST['adresse']
         sexe = request.POST['sexe']
         telephone = request.POST['telephone']
+        role_id = request.POST['role']
+        role = Role.objects.get(id=role_id)
         statut = 'actif'
         mot_de_passe = generer_mot_de_passe()
 
@@ -151,7 +177,7 @@ def ajouter_salarie(request):
             adresse=adresse,
             sexe=sexe,
             telephone=telephone,
-            type_utilisateur='EM',
+            role=role,
             statut=statut
         )
         
@@ -160,9 +186,7 @@ def ajouter_salarie(request):
         date_naissance = request.POST['date_naissance']
         annee_exp = request.POST['annee_exp']
         departement_id = request.POST['departement']
-        admin_id = request.POST['admin']
         departement = Departement.objects.get(id=departement_id)
-        admin = admin.objects.get(id=admin_id)
 
         salarie = Salarie.objects.create(
             nom=nom,
@@ -170,7 +194,6 @@ def ajouter_salarie(request):
             dateNaissance=date_naissance,
             annee_exp=annee_exp,
             compte=compte,
-            admin=admin,
             departement=departement
         )
 
@@ -188,9 +211,9 @@ def ajouter_salarie(request):
             pass
 
         return redirect('success')
+    roles = Role.objects.all()
     departements = Departement.objects.all()
-    admins = admin.objects.all()
-    return render(request, 'pages/admin/pages/creer/ajouter_salarie.html', {'departements': departements, 'admins': admins})
+    return render(request, 'pages/admin/pages/creer/ajouter_salarie.html', {'departements': departements, 'roles': roles})
 
 #Création de la vue permettant de créer le compte des entreprises
 def ajouter_entreprise(request):
@@ -200,6 +223,8 @@ def ajouter_entreprise(request):
         adresse = request.POST['adresse']
         sexe = request.POST['sexe']
         telephone = request.POST['telephone']
+        role_id = request.POST['role']
+        role = Role.objects.get(id=role_id)
         statut = 'actif'
         mot_de_passe = generer_mot_de_passe()
 
@@ -210,7 +235,7 @@ def ajouter_entreprise(request):
             adresse=adresse,
             sexe=sexe,
             telephone=telephone,
-            type_utilisateur='EN',
+            role=role,
             statut=statut
         )
 
@@ -241,8 +266,8 @@ def ajouter_entreprise(request):
 
         return redirect('success')
 
-    admins = admin.objects.all()
-    return render(request, 'pages/admin/pages/creer/ajouter_entreprise.html', {'admins': admins})
+    roles = Role.objects.all()
+    return render(request, 'pages/admin/pages/creer/ajouter_entreprise.html', {'roles': roles})
 
 #Création de la vue pour créer les contrats 
 def creer_contrat(request):
@@ -304,3 +329,156 @@ def creer_fichepaie(request):
 
     salaries = Salarie.objects.all()
     return render(request, 'pages/admin/pages/creer/creer_fichepaie.html', {'salaries': salaries})
+
+
+
+#Fonction pour retourner la vue vers la page de la liste des salariés
+def liste_salarie(request):
+    salaries = Salarie.objects.select_related('compte').prefetch_related('competence_set').all()
+    
+    # Recherche
+    query = request.GET.get('q')
+    if query:
+        salaries = salaries.filter(
+            Q(nom__icontains=query)|
+            Q(prenom__icontains=query)|
+            Q(domaine__icontains=query)|
+            Q(competence_set__competence__icontains=query)
+        )
+
+    context = {
+        'salaries': salaries,
+    }
+    return render(request,'pages/admin/pages/liste/listeSalarie.html', context)
+
+#Fonction pour retourner la vue vers la page de la liste des entreprises
+def liste_entreprise(request):
+    entreprises = Entreprise.objects.select_related('compte').all()
+
+    # Recherche
+    query = request.GET.get('q')
+    if query:
+        entreprises = entreprises.filter(
+            Q(nom__icontains=query)
+        )
+
+    context = {
+    'entreprises': entreprises,
+    }
+    return render(request,'pages/admin/pages/liste/listeEntreprise.html',context)
+
+#Fonction pour retourner la vue vers la page de création de compte
+def creer_compte(request):
+    if request.method == "POST":
+        error = []
+        # Récupérer les données du formulaire
+        nom_utilisateur = request.POST.get('nom_utilisateur')
+        email = request.POST.get('email')
+        adresse = request.POST.get('adresse')
+        sexe = request.POST.get('sexe')
+        telephone = request.POST.get('telephone')
+        nom_role = request.POST.get('nom_role') 
+        statut = 'actif'
+        mot_de_passe = generer_mot_de_passe()
+        
+        # Vérifier l'unicité de l'email et du contact
+        if Compte.objects.filter(email=email).exists():
+            error.append("Un utilisateur avec cet email existe déjà.")
+        if Compte.objects.filter(telephone=telephone).exists():
+            error.append("Un utilisateur avec ce contact existe déjà.")
+        
+        # Afficher les erreurs
+        if error:
+            for err in error:
+                messages.error(request, err)
+            return redirect('creer_compte')
+        
+        try:
+            nom_role = Role.objects.get(id=nom_role)
+        except Role.DoesNotExist:
+            messages.error(request, "Le rôle sélectionné n'existe pas.")
+            return redirect('creer_compte')
+
+        # Créer l'utilisateur
+        compte = Compte.objects.create(
+            nom_utilisateur=nom_utilisateur,
+            mot_de_passe=mot_de_passe,
+            email=email,
+            adresse=adresse,
+            sexe=sexe,
+            telephone=telephone,
+            nom_role=nom_role,
+            statut=statut
+        )
+        
+        # Envoyer l'email avec les identifiants de connexion
+        subject = "Votre compte entreprise a été créé"
+        message = f'Bonjour,\n\nVotre compte entreprise a été créé.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe'
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [email]
+
+        if email:
+            send_mail(
+                subject,
+                message,
+                from_email,
+                recipient_list,
+                fail_silently=False,
+            )
+        else:
+            # Logique d'envoi par WhatsApp (à implémenter)
+            pass
+
+        # Créer le modèle associé basé sur le rôle de l'utilisateur
+        if nom_role.nom_role == "Salarié":
+            nom_salarie = request.POST.get('nom_salarie')
+            prenom_salarie = request.POST.get('prenom_salarie')
+            date_naissance = request.POST.get('date_naissance')
+            annee_exp = request.POST.get('annee_exp')
+            departement_id = request.POST.get('departement')
+
+            try:
+                departement = Departement.objects.get(id=departement_id)
+            except Departement.DoesNotExist:
+                messages.error(request, "Le département sélectionné n'existe pas.")
+                return redirect('creer_compte')
+
+            salarie = Salarie.objects.create(
+                nom_salarie= nom_salarie,
+                prenom_salarie=prenom_salarie,
+                dateNaissance=date_naissance,
+                annee_exp=annee_exp,
+                compte=compte,
+                departement=departement
+            )
+
+            competences = request.POST.getlist('competences')
+            for competence in competences:
+                Competence.objects.create(salarie=salarie, competence=competence)
+                    
+        elif nom_role.nom_role == "Entreprise partenaire":
+            nom_entreprise = request.POST.get('nom_entreprise')
+            secteur_activite = request.POST.get('secteur_activite')
+            site_web=request.POST.get('site_web')
+            
+            Entreprise.objects.create(
+                nom_entreprise=nom_entreprise,
+                secteurActivite=secteur_activite,
+                site_web=site_web,
+                compte=compte,
+            )
+        elif nom_role.nom_role == "Admin":
+            nom_admin = request.POST.get('nom_admin')
+            prenom_admin = request.POST.get('prenom_admin')
+
+            Admin.objects.create(
+                nom_admin=nom_admin,
+                prenom_admin=prenom_admin,
+                compte=compte,
+            )
+
+        return redirect('success')
+
+    roles = Role.objects.all()
+    departements = Departement.objects.all()
+    return render(request, 'pages/admin/pages/creer/creer_compte.html', {'departements': departements, 'roles': roles})

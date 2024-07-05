@@ -347,7 +347,7 @@ nav.close ~ .dashboard .top{
     background-color: var(--box3-color);
 }
 .boxes .box.box4{
-    background-color: var(--box4-color);
+    background-color: var(--box2-color);
 }
 .dash-content .activity .activity-data{
     display: flex;

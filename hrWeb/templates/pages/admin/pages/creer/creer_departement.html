@@ -1,1 +1,25 @@
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une fiche de paie</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Créer un département</h2>
+        <form action="{% url 'creer_departement' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nom_dep">Nom du département:</label>
+                <input type="text" class="nom_dep" id="nom_dep" name="nom_dep" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Créer le département</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'layouts/basedashboardadmin.html' %}
+{% block content %}
+<div class="dash-content">
+    <div class="overview">
+    <div class="activity">
+        <div class="title">
+            <i class="uil uil-clock-three"></i>
+            <span class="text">Liste des entreprises partenaires</span>
+        </div>
+        <div class="activity-data">
+            {% for entreprise in entreprises %}
+            <div class="data nom">
+                <span class="data-title">Nom</span>
+                <span class="data-list">{{ entreprise.compte.nom }}</span>
+            </div>
+            <div class="data email">
+                <span class="data-title">Email</span>
+                <span class="data-list">{{ entreprise.compte.email }}</span>
+            </div>
+            <div class="data contact">
+                <span class="data-title">Contact</span>
+                <span class="data-list">{{ entreprise.compte.contact }}</span>
+            </div>
+            <div class="data status">
+                <span class="data-title">Status</span>
+                <span class="data-list">{{ entreprise.compte.statut }}</span>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
