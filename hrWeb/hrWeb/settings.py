@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'hrWeb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_web',
+        'NAME': 'db_hr',
         'USER':'postgres',
         'PASSWORD':'xuner2004',
         'HOST': '127.0.0.1',

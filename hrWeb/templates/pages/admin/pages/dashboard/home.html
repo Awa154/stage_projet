@@ -1,94 +1,117 @@
 {% extends 'layouts/basedashboardadmin.html' %}
 {% block content %}
-<div class="dash-content">
-    <div class="overview">
-        <div class="title">
-            <i class="uil uil-tachometer-fast-alt"></i>
-            <span class="text">Tableau de bord</span>
+<!-- MAIN -->
+<main>
+    <h1 class="title">Tableau de bord</h1>
+    <div class="info-data">
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2>{{ total_salaries }}</h2>
+                    <p>Total salariés</p>
+                </div>
+                <i class='bx bx-trending-up icon'></i>
+            </div>
+            <span class="progress" data-value="{{ total_salaries }}%"></span>
+            <span class="label">{{ total_salaries }}%</span>
         </div>
-
-        <div class="boxes">
-            <div class="box box1">
-                <i class="uil uil-users-alt"></i>
-                <span class="text">Total Employés</span>
-                <span class="number">500</span>
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2>{{ total_partners }}</h2>
+                    <p>Total entreprise</p>
+                </div>
+                <i class='bx bx-trending-down icon down'></i>
             </div>
-            <div class="box box2">
-                <i class="uil uil-building"></i>
-                <span class="text">Total Partenaires</span>
-                <span class="number">1500</span>
-            </div>
-            <div class="box box3">
-                <i class="uil uil-file-alt"></i>
-                <span class="text">Total Contrat</span>
-                <span class="number">1000</span>
-            </div>
-            <div class="box box4">
-                <i class="uil uil-receipt"></i>
-                <span class="text">Total Fiches de paie</span>
-                <span class="number">1000</span>
-            </div>
+            <span class="progress" data-value="{{ total_partners }}%"></span>
+            <span class="label">{{ total_partners }}%</span>
         </div>
-    </div>
-
-    <div class="activity">
-        <div class="title">
-            <i class="uil uil-clock-three"></i>
-            <span class="text">Activitées récentes</span>
-        </div>
-
-        <div class="activity-data">
-            <div class="data names">
-                <span class="data-title">Name</span>
-                <span class="data-list">Prem Shahi</span>
-                <span class="data-list">Deepa Chand</span>
-                <span class="data-list">Manisha Chand</span>
-                <span class="data-list">Pratima Shahi</span>
-                <span class="data-list">Man Shahi</span>
-                <span class="data-list">Ganesh Chand</span>
-                <span class="data-list">Bikash Chand</span>
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2>{{ total_salaries }}</h2>
+                    <p>Total Contrats</p>
+                </div>
+                <i class='bx bx-trending-up icon' ></i>
             </div>
-            <div class="data email">
-                <span class="data-title">Email</span>
-                <span class="data-list">premshahi@gmail.com</span>
-                <span class="data-list">deepachand@gmail.com</span>
-                <span class="data-list">prakashhai@gmail.com</span>
-                <span class="data-list">manishachand@gmail.com</span>
-                <span class="data-list">pratimashhai@gmail.com</span>
-                <span class="data-list">manshahi@gmail.com</span>
-                <span class="data-list">ganeshchand@gmail.com</span>
-            </div>
-            <div class="data joined">
-                <span class="data-title">Joined</span>
-                <span class="data-list">2022-02-12</span>
-                <span class="data-list">2022-02-12</span>
-                <span class="data-list">2022-02-13</span>
-                <span class="data-list">2022-02-13</span>
-                <span class="data-list">2022-02-14</span>
-                <span class="data-list">2022-02-14</span>
-                <span class="data-list">2022-02-15</span>
-            </div>
-            <div class="data type">
-                <span class="data-title">Type</span>
-                <span class="data-list">New</span>
-                <span class="data-list">Member</span>
-                <span class="data-list">Member</span>
-                <span class="data-list">New</span>
-                <span class="data-list">Member</span>
-                <span class="data-list">New</span>
-                <span class="data-list">Member</span>
-            </div>
-            <div class="data status">
-                <span class="data-title">Status</span>
-                <span class="data-list">Liked</span>
-                <span class="data-list">Liked</span>
-                <span class="data-list">Liked</span>
-                <span class="data-list">Liked</span>
-                <span class="data-list">Liked</span>
-                <span class="data-list">Liked</span>
-                <span class="data-list">Liked</span>
-            </div>
+            <span class="progress" data-value="{{ total_salaries }}%"></span>
+            <span class="label">{{ total_salaries }}%</span>
         </div>
     </div>
-</div>
+    <div class="data">
+        <div class="content-data">
+            <div class="head">
+                <h3>Rapport employement</h3>
+                <div class="menu">
+                    <i class='bx bx-dots-horizontal-rounded icon'></i>
+                    <ul class="menu-link">
+                        <li><a href="#">Modifier</a></li>
+                        <li><a href="#">Enregistrer</a></li>
+                        <li><a href="#">Supprimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart">
+                <div id="chart"></div>
+            </div>
+        </div>
+        <div class="content-data">
+            <div class="head">
+                <h3>Chatbox</h3>
+                <div class="menu">
+                    <i class='bx bx-dots-horizontal-rounded icon'></i>
+                    <ul class="menu-link">
+                        <li><a href="#">Edit</a></li>
+                        <li><a href="#">Save</a></li>
+                        <li><a href="#">Remove</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chat-box">
+                <p class="day"><span>Today</span></p>
+                <div class="msg">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="">
+                    <div class="chat">
+                        <div class="profile">
+                            <span class="username">Alan</span>
+                            <span class="time">18:30</span>
+                        </div>
+                        <p>Hello</p>
+                    </div>
+                </div>
+                <div class="msg me">
+                    <div class="chat">
+                        <div class="profile">
+                            <span class="time">18:30</span>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque voluptatum eos quam dolores eligendi exercitationem animi nobis reprehenderit laborum! Nulla.</p>
+                    </div>
+                </div>
+                <div class="msg me">
+                    <div class="chat">
+                        <div class="profile">
+                            <span class="time">18:30</span>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam, architecto!</p>
+                    </div>
+                </div>
+                <div class="msg me">
+                    <div class="chat">
+                        <div class="profile">
+                            <span class="time">18:30</span>
+                        </div>
+                        <p>Lorem ipsum, dolor sit amet.</p>
+                    </div>
+                </div>
+            </div>
+            <form action="#">
+                <div class="form-group">
+                    <input type="text" placeholder="Type...">
+                    <button type="submit" class="btn-send"><i class='bx bxs-send' ></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<!-- MAIN -->
 {% endblock content %}

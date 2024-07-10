@@ -2,23 +2,25 @@
 {% block content %}
 <div class="form login">
     <a href="{% url 'home' %}" class="close-button text-dark"><i class="fas fa-times"></i></a>
+    {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
     <span class="title">Connexion</span>
-    <form action="{% url 'login' %}" method="POST">
+    <form action="{% url 'connexion' %}" method="POST">
         {% csrf_token %}
         <div class="input-field">
-            <input type="text" placeholder="Entrer votre nom d'utilisateur" required>
+            <input type="text" name="nom_utilisateur" id="nom_utilisateur" placeholder="Entrer votre nom d'utilisateur" required>
             <i class="uil uil-user"></i>
         </div>
         <div class="input-field">
-            <input type="password" class="password" placeholder="Entrer votre mot de passe" required>
+            <input type="password" name="mot_de_passe" id="mot_de_passe" class="password" placeholder="Entrer votre mot de passe" required>
             <i class="uil uil-lock icon"></i>
-            <i class="uil uil-eye-slash showHidePw"></i>
         </div>
         <div class="checkbox-text">
             <a href="#" class="text">Forgot password?</a>
         </div>
         <div class="input-field button">
-            <input type="button" value="Se connecter">
+            <input type="submit" value="Se connecter">
         </div>
     </form>
 </div>

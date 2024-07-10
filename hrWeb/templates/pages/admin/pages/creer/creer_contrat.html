@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un contrat</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -15,16 +20,18 @@
             <div class="form-group">
                 <label for="salarie">Salarié</label>
                 <select class="form-control" id="salarie" name="salarie" required>
+                    <option value="">Selectionner...</option>
                     {% for salarie in salaries %}
-                        <option value="{{ salarie.id }}">{{ salarie.nom }} {{ salarie.prenom }}</option>
+                        <option value="{{ salarie.id }}">{{ salarie.nom_salarie }} {{ salarie.prenom_salarie }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="entreprise">Entreprise</label>
                 <select class="form-control" id="entreprise" name="entreprise" required>
+                    <option value="">Selectionner...</option>
                     {% for entreprise in entreprises %}
-                        <option value="{{ entreprise.id }}">{{ entreprise.nom }}</option>
+                        <option value="{{ entreprise.id }}">{{ entreprise.nom_entreprise }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -41,33 +48,72 @@
                 <input type="text" class="form-control" id="type_contrat" name="type_contrat" required>
             </div>
             <div class="form-group">
-                <label for="mode_paiement">Mode de paiement</label>
+                <label for="mode_paiement">Payement par</label>
                 <select class="form-control" id="mode_paiement" name="mode_paiement" required>
+                    <option value="">Selectionner...</option>
                     <option value="H">Heure</option>
                     <option value="J">Jour</option>
                     <option value="M">Mois</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="taux_horaire">Taux horaire</label>
-                <input type="number" class="form-control" id="taux_horaire" name="taux_horaire">
+            <!-- Par heure -->  
+            <div id="heure-fields" class="hidden">
+                <div class="form-group">
+                    <label for="taux_horaire">Taux horaire</label>
+                    <input type="number" class="form-control" id="taux_horaire" name="taux_horaire">
+                </div>
+                <div class="form-group">
+                    <label for="heures_travail">Nombre d'heure de travail</label>
+                    <input type="number" class="form-control" id="heures_travail" name="heures_travail">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="heures_travail">Heures de travail</label>
-                <input type="number" class="form-control" id="heures_travail" name="heures_travail">
+            <!-- Par jour -->  
+            <div id="jour-fields" class="hidden">
+                <div class="form-group">
+                    <label for="taux_horaire">Taux horaire</label>
+                    <input type="number" class="form-control" id="taux_horaire" name="taux_horaire">
+                </div>
+                <div class="form-group">
+                    <label for="jours_travail">Nombre de jour de travail</label>
+                    <input type="number" class="form-control" id="jours_travail" name="jours_travail">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="jours_travail">Jours de travail</label>
-                <input type="number" class="form-control" id="jours_travail" name="jours_travail">
-            </div>
-            <div class="form-group">
-                <label for="salaire_mensuel">Salaire mensuel</label>
-                <input type="number" class="form-control" id="salaire_mensuel" name="salaire_mensuel">
+            <!-- Par mois -->  
+            <div id="mois-fields" class="hidden">
+                <div class="form-group">
+                    <label for="salaire_mensuel">Salaire mensuel</label>
+                    <input type="number" class="form-control" id="salaire_mensuel" name="salaire_mensuel">
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Créer le contrat</button>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Gestion des champs de rôles
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('mode_paiement');
+            const heureFields = document.getElementById('heure-fields');
+            const jourFields = document.getElementById('jour-fields');
+            const moisFields = document.getElementById('mois-fields');
+    
+            roleSelect.addEventListener('change', function() {
+                const selectedMode = this.value;
+                heureFields.classList.add('hidden');
+                jourFields.classList.add('hidden');
+                moisFields.classList.add('hidden');
+    
+                if (selectedMode === 'H') {
+                    heureFields.classList.remove('hidden');
+                } else if (selectedMode === 'J') {
+                    jourFields.classList.remove('hidden');
+                } else if (selectedMode === 'M') {
+                    moisFields.classList.remove('hidden');
+                }
+            });
+        });
+    
+    </script>
 </body>
 </html>

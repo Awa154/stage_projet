@@ -1,4 +1,5 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Departement(models.Model):
@@ -22,12 +23,12 @@ class Compte(models.Model):
         ('actif', 'Actif'),
         ('inactif', 'Inactif'),
     )
-    nom_utilisateur = models.CharField(max_length=50)
-    mot_de_passe = models.CharField(max_length=50)
+    nom_utilisateur = models.CharField(max_length=100)
+    mot_de_passe = models.CharField(max_length=100)
     sexe = models.CharField(max_length=1, choices=SEXE_CHOICES)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(max_length=200, unique=True, null=True, blank=True)
     adresse = models.CharField(max_length=100)
-    telephone = models.CharField(max_length=20, null=True, blank=True)
+    telephone = PhoneNumberField(unique=True,null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     photo_profile = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES)
@@ -44,29 +45,31 @@ class Compte(models.Model):
             pass
 
 class Admin(models.Model):
-    nom_admin = models.CharField(max_length=50)
-    prenom_admin = models.CharField(max_length=100)
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
+    nom_admin = models.CharField(max_length=100)
+    prenom_admin = models.CharField(max_length=150)
+    
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"
 
 class Entreprise(models.Model):
+    compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
     nom_entreprise = models.CharField(max_length=100)
     secteurActivite = models.CharField(max_length=100)
     site_web = models.URLField(max_length=255, blank=True)
-    compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
+    
 
     def __str__(self):
         return self.nom
 
 class Salarie(models.Model):
-    nom_salarie = models.CharField(max_length=50)
-    prenom_salarie = models.CharField(max_length=100)
+    compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
+    nom_salarie = models.CharField(max_length=100)
+    prenom_salarie = models.CharField(max_length=150)
     dateNaissance = models.DateField()
     dateEmbauche = models.DateTimeField(auto_now_add=True)
     annee_exp = models.PositiveIntegerField(null=True)
-    compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
     departement = models.ForeignKey(Departement, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
