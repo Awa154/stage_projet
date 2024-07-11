@@ -46,6 +46,10 @@ def home_salarie(request):
 def home_entreprise(request):
     return render(request,'pages/entreprise/dashboard/home.html')
 
+#Fonction pour retourner la vue vers la page d'accueil
+def home_test(request):
+    return render(request,'pages/admin/pages/dashboard/test.html')
+
 #Création de la vue pour créer un département
 def creer_departement(request):
     if request.method == 'POST':

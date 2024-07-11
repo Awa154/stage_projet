@@ -9,6 +9,7 @@ urlpatterns = [
     path('home_admin', home_admin, name="home_admin"),
     path('home_salarie', home_salarie, name="home_salarie"),
     path('home_entreprise', home_entreprise, name="home_entreprise"),
+    path('home_test', home_test, name="home_test"),
     
     #Route vers les pages concernant l'authentification
     path('connexion', connexion, name="connexion"),

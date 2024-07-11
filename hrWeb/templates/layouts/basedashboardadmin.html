@@ -1,95 +1,171 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <!----======== CSS ======== -->
-    <link href="{% static 'assets/css/dash.css' %}" rel="stylesheet">
-    <!----===== Iconscout CSS ===== -->
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-	<title>AdminSite</title>
-</head>
-<body>
-	
-	<!-- SIDEBAR -->
-	<section id="sidebar">
-		<a href="#" class="brand"><i class='bx bxs-smile icon'></i> HrBridge</a>
-		<ul class="side-menu">
-			<li><a href="{% url 'home_admin' %}" class="active"><i class="uil uil-estate  icon"></i> Tableau de bord</a></li>
-			<li class="divider" data-text="Utilisateurs">Utilisateurs</li>
-			<li>
-				<a href="#"><i class="uil uil-user-circle icon"></i> Comptes <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="{% url 'creer_compte' %}">Ajouter</a></li>
-					<li><a href="#">Lister</a></li>
-				</ul>
-			</li>
-			<li><a href="{% url 'liste_salarie' %}"><i class="uil uil-users-alt  icon"></i> Salariés</a></li>
-			<li><a href="{% url 'liste_entreprise' %}"><i class="uil uil-building  icon"></i>Entreprise</a></li>
-			<li class="divider" data-text="Document">Document</li>
-            <li>
-				<a href="#"><i class='uil uil-sign-alt icon' ></i> Contrat <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="#">Créer</a></li>
-					<li><a href="#">En cours</a></li>
-					<li><a href="#">Terminer</a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="#"><i class='uil uil-bill icon' ></i> Fiche de paie <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="#">Emettre</a></li>
-					<li><a href="#">Payer</a></li>
-					<li><a href="#">Impayer</a></li>
-				</ul>
-			</li>
-		</ul>
-	</section>
-	<!-- SIDEBAR -->
 
-	<!-- NAVBAR -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			<i class='bx bx-menu toggle-sidebar' ></i>
-			<form action="#">
-				<div class="form-group">
-					<input type="text" placeholder="Search...">
-					<i class='bx bx-search icon' ></i>
-				</div>
-			</form>
-			<a href="#" class="nav-link">
-				<i class='bx bxs-bell icon' ></i>
-				<span class="badge">5</span>
-			</a>
-			<a href="#" class="nav-link">
-				<i class='bx bxs-message-square-dots icon' ></i>
-				<span class="badge">8</span>
-			</a>
-			<span class="divider"></span>
-            <div class="info">
-                <p>Bienvenue, <b>{{ request.session.username }}</b></p>
-                <small class="text-muted">Admin</small>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">    
+    <!----======== CSS ======== -->
+    <link href="{% static 'assets/css/test.css' %}" rel="stylesheet">
+    <title>Bootstap 5 Responsive Admin Tableau de bord</title>
+</head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-3 primary-text fs-2 fw-bold mt-4">
+                <img src="{% static 'assets/image/logo.png' %}">HrBridge
             </div>
-			<div class="profile">
-				<img src="{% static 'assets/image/user.png' %}">
-				<ul class="profile-link">
-					<li><a href="#"><i class='uil uil-user-circle icon' ></i> Profile</a></li>
-					<li><a href="#"><i class='uil uil-setting' ></i> Paramètre</a></li>
-					<li><a href="{% url 'deconnexion' %}"><i class='uil uil-signout' ></i> Déconnexion</a></li>
-				</ul>
-			</div>
-		</nav>
-        {% block content %}
+            <div class="bg-white p-4">
+                <ul class="nav nav-pills flex-column mt-2"> 
+                    <li class="nav-item">
+                        <a href="{% url 'home_admin' %}" class="nav-link active">
+                            <i class="fs-5 uil uil-estate me-2"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link second-text" data-bs-toggle="collapse" data-bs-target="#compte" aria-expanded="false" aria-controls="compte">
+                            <i class="fs-5 uil uil-user-circle me-2"></i>
+                            <span>Utilisateur</span>
+                            <i class="arrow fs-5 uil uil-angle-right ms-auto"></i>
+                        </a>
+                        <ul id="compte" class="collapse list-unstyled">
+                            <li class="nav-item">
+                                <a href="{% url 'creer_compte' %}" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Ajouter</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Lister</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'liste_salarie' %}" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Salariés</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'liste_entreprise' %}" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-building me-2"></i>
+                                    <span>Partenaires</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link second-text" data-bs-toggle="collapse" data-bs-target="#contrat" aria-expanded="false" aria-controls="contrat">
+                            <i class="fs-5 uil uil-file-contract me-2"></i>
+                            <span>Contrat</span>
+                            <i class="arrow fs-5 uil uil-angle-right ms-auto"></i>
+                        </a>
+                        <ul id="contrat" class="collapse list-unstyled">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Ajouter</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Lister</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link second-text" data-bs-toggle="collapse" data-bs-target="#paie" aria-expanded="false" aria-controls="paie">
+                            <i class="fs-5 uil uil-receipt me-2"></i>
+                            <span>Fiche de paie</span>
+                            <i class="arrow fs-5 uil uil-angle-right ms-auto"></i>
+                        </a>
+                        <ul id="paie" class="collapse list-unstyled">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Ajouter</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link second-text">
+                                    <i class="fs-5 uil uil-user me-2"></i>
+                                    <span>Lister</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link second-text">
+                            <i class="fs-5 uil uil-envelope me-2"></i>
+                            <span>Message</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link second-text">
+                            <i class="fs-5 uil uil-chart me-2"></i>
+                            <span>Rapport</span>
+                        </a>
+                    </li>
+                </ul>   
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-align-left primary-text fs-4 me-3" id="menu-toggle"></i>
+                    <h2 class="fs-2 m-0">Tableau de bord</h2>
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+						<div class="d-flex align-items-center">
+							<p class="me-2">Bienvenue, <b>{{ request.session.username }}</b></p>
+							<li class="nav-item dropdown me-4">
+								<a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown"
+									role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+									<li><a class="dropdown-item" href="#">Profile</a></li>
+									<li><a class="dropdown-item" href="#">Paramètre</a></li>
+									<li><a class="dropdown-item" href="#">Deconnexion</a></li>
+								</ul>
+							</li>
+							<img src="{% static 'assets/image/user.png' %}"></i>
+						</div>
+                    </ul>
+                </div>
+            </nav>
+            {% block content %}
         
-        {% endblock content %}
-		<!-- NAVBAR -->
-	</section>
-	<!-- NAVBAR -->
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<!----JS script----->
-    <script src="{% static 'assets/script/dash.js' %}" rel="stylesheet"></script>
+            {% endblock content %}
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!----JS script----->
+    <script src="{% static 'script/test.js' %}" rel="stylesheet"></script>
 </body>
+
 </html>

@@ -1,20 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer un compte salarié</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        {% for message in messages %}
+{% extends 'layouts/basedashboardadmin.html' %}
+{% block content %}
+<!-- MAIN -->
+<div class="container-fluid px-4 py-4">
+    {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">{{ message }}</div>
         {% endfor %}
         <h2>Créer un compte</h2>
@@ -118,52 +106,50 @@
             </div>
             <button type="submit" class="btn btn-primary">Créer le compte</button>
         </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Gestion des champs de rôles
-        document.addEventListener('DOMContentLoaded', function() {
-            const roleSelect = document.getElementById('role');
-            const salarieFields = document.getElementById('salarie-fields');
-            const adminFields = document.getElementById('admin-fields');
-            const entrepriseFields = document.getElementById('entreprise-fields');
-    
-            roleSelect.addEventListener('change', function() {
-                const selectedRole = this.value;
-                salarieFields.classList.add('hidden');
-                adminFields.classList.add('hidden');
-                entrepriseFields.classList.add('hidden');
-    
-                if (selectedRole === '2') {
-                    salarieFields.classList.remove('hidden');
-                } else if (selectedRole === '1') {
-                    adminFields.classList.remove('hidden');
-                } else if (selectedRole === '3') {
-                    entrepriseFields.classList.remove('hidden');
-                }
-            });
-        });
-    
-        // Gestion des champs de compétence
+</div>
+<script>
+    // Gestion des champs de rôles
     document.addEventListener('DOMContentLoaded', function() {
-        const addCompetenceButton = document.getElementById('add-competence');
-        const competencesContainer = document.getElementById('competences-container');
+        const roleSelect = document.getElementById('role');
+        const salarieFields = document.getElementById('salarie-fields');
+        const adminFields = document.getElementById('admin-fields');
+        const entrepriseFields = document.getElementById('entreprise-fields');
+
+        roleSelect.addEventListener('change', function() {
+            const selectedRole = this.value;
+            salarieFields.classList.add('hidden');
+            adminFields.classList.add('hidden');
+            entrepriseFields.classList.add('hidden');
+
+            if (selectedRole === '2') {
+                salarieFields.classList.remove('hidden');
+            } else if (selectedRole === '1') {
+                adminFields.classList.remove('hidden');
+            } else if (selectedRole === '3') {
+                entrepriseFields.classList.remove('hidden');
+            }
+        });
+    });
+
+    // Gestion des champs de compétence
+document.addEventListener('DOMContentLoaded', function() {
+    const addCompetenceButton = document.getElementById('add-competence');
+    const competencesContainer = document.getElementById('competences-container');
+
+    addCompetenceButton.addEventListener('click', function() {
+        const newCompetenceField = document.createElement('div');
+        newCompetenceField.className = 'form-group';
+        newCompetenceField.innerHTML = `
+            <input type="text" class="form-control mb-2" name="competences" placeholder="Compétence" title="Compétence" required>
+            <button type="button" class="btn btn-danger remove-competence">Supprimer</button>
+        `;
+            competencesContainer.appendChild(newCompetenceField);
     
-        addCompetenceButton.addEventListener('click', function() {
-            const newCompetenceField = document.createElement('div');
-            newCompetenceField.className = 'form-group';
-            newCompetenceField.innerHTML = `
-                <input type="text" class="form-control mb-2" name="competences" placeholder="Compétence" title="Compétence" required>
-                <button type="button" class="btn btn-danger remove-competence">Supprimer</button>
-            `;
-                competencesContainer.appendChild(newCompetenceField);
-        
-                newCompetenceField.querySelector('.remove-competence').addEventListener('click', function() {
-                    newCompetenceField.remove();
-                });
+            newCompetenceField.querySelector('.remove-competence').addEventListener('click', function() {
+                newCompetenceField.remove();
             });
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+<!-- MAIN -->
+{% endblock content %}
