@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
+from celery.schedules import crontab
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -144,3 +146,24 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL=False
 EMAIL_HOST_USER = 'kemiadjiou071@gmail.com'
 EMAIL_HOST_PASSWORD = 'gelgaaodboqkxnkt'
+
+
+# Durée de la session en secondes (par exemple, 3600 secondes pour 1 heure)
+SESSION_COOKIE_AGE = 3600
+
+# Pour fermer automatiquement la session à la fermeture du navigateur
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULE = {
+    'check_contracts': {
+        'task': 'myapp.tasks.check_contracts',
+        'schedule': crontab(minute=0, hour=0),  # Exécution quotidienne à minuit
+    },
+}
+
+# Autres configurations Celery
+CELERY_TIMEZONE = 'UTC'
+CELERY_ENABLE_UTC = True

@@ -9,9 +9,15 @@ class Departement(models.Model):
         return self.nom_dep
     
 class Role(models.Model):
+    ACCE_PAGE = (
+        ('AD', 'Page administrateur'),
+        ('SA', 'Page salarié'),
+        ('EN', 'Page des partenaires'),
+        ('CL', 'Page des clients'),
+    )
     nom_role = models.CharField(max_length=50)
     niv_permission=models.IntegerField()
-    departement = models.ForeignKey(Departement, on_delete=models.SET_NULL, null=True, blank=True)
+    acce_page=models.CharField(max_length=60,choices=ACCE_PAGE, null=True, blank=True)
 
 
 class Compte(models.Model):
@@ -19,22 +25,18 @@ class Compte(models.Model):
         ('H', 'Homme'),
         ('F', 'Femme'),
     )
-    STATUT_CHOICES = (
-        ('actif', 'Actif'),
-        ('inactif', 'Inactif'),
-    )
     nom_utilisateur = models.CharField(max_length=100)
     mot_de_passe = models.CharField(max_length=100)
-    sexe = models.CharField(max_length=1, choices=SEXE_CHOICES)
+    sexe = models.CharField(max_length=1, choices=SEXE_CHOICES, null=True, blank=True)
     email = models.EmailField(max_length=200, unique=True, null=True, blank=True)
-    adresse = models.CharField(max_length=100)
+    adresse = models.CharField(max_length=100, null=True, blank=True)
     telephone = PhoneNumberField(unique=True,null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     photo_profile = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    statut = models.CharField(max_length=10, choices=STATUT_CHOICES)
+    is_active = models.BooleanField(default=True)  # Champ pour indiquer si le compte est actif
 
     def __str__(self):
-        return self.nom_utilisateur
+        return self.email
 
     def envoyerIdentifiants(self):
         if self.email:
@@ -48,10 +50,6 @@ class Admin(models.Model):
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
     nom_admin = models.CharField(max_length=100)
     prenom_admin = models.CharField(max_length=150)
-    
-
-    def __str__(self):
-        return f"{self.nom} {self.prenom}"
 
 class Entreprise(models.Model):
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
@@ -59,38 +57,31 @@ class Entreprise(models.Model):
     secteurActivite = models.CharField(max_length=100)
     site_web = models.URLField(max_length=255, blank=True)
     
-
-    def __str__(self):
-        return self.nom
-
+class Client(models.Model):
+    compte = models.OneToOneField(Compte, on_delete=models.CASCADE, null=True, blank=True)
+    entreprise_affilier = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    nom_client = models.CharField(max_length=100)
+    prenom_client = models.CharField(max_length=150)
+    poste_occupe = models.CharField(max_length=100)
+    
 class Salarie(models.Model):
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
     nom_salarie = models.CharField(max_length=100)
     prenom_salarie = models.CharField(max_length=150)
-    dateNaissance = models.DateField()
-    dateEmbauche = models.DateTimeField(auto_now_add=True)
+    dateNaissance = models.DateField(null=True, blank=True)
+    dateEmbauche = models.DateTimeField(null=True, blank=True)
     annee_exp = models.PositiveIntegerField(null=True)
     departement = models.ForeignKey(Departement, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.nom} {self.prenom}"
-
 class Competence(models.Model):
     salarie = models.ForeignKey(Salarie, on_delete=models.CASCADE)
-    competence = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.competence} ({self.salarie.nom} {self.salarie.prenom})"
+    competence = models.CharField(max_length=100,null=True, blank=True)
 
 class Contrat(models.Model):
     PAIE_CHOICES = (
         ('H', 'Heure'),
         ('J', 'Jour'),
         ('M', 'Mois'),
-    )
-    STATUT_CHOICES = (
-        ('actif', 'Actif'),
-        ('terminer', 'Terminer'),
     )
     date_debut = models.DateField()
     date_fin = models.DateField()
@@ -100,20 +91,14 @@ class Contrat(models.Model):
     heures_travail = models.IntegerField(null=True, blank=True)
     jours_travail = models.IntegerField(null=True, blank=True)
     salaire_mensuel = models.FloatField(null=True, blank=True)
-    statut = models.CharField(max_length=10, choices=STATUT_CHOICES)
+    statut = models.CharField(max_length=10, default='En cours')
     salarie = models.ForeignKey(Salarie, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Contrat {self.id} - {self.salarie.nom} {self.salarie.prenom}"
 
 class FicheDePaie(models.Model):
     salarie = models.ForeignKey(Salarie, on_delete=models.CASCADE)
     datePaiement = models.DateField()
     montant = models.FloatField()
-
-    def __str__(self):
-        return f"FicheDePaie {self.id} - {self.salarie.nom} {self.salarie.prenom}"
     
 #Méthode pour calculer le salaire en fonction du mode payement d'un employé
 def calculer_montant_final(self):
@@ -123,7 +108,7 @@ def calculer_montant_final(self):
     if contrat.mode_paiement == 'H':
         return contrat.taux_horaire * contrat.heures_travail
     elif contrat.mode_paiement == 'J':
-        return contrat.taux_horaire * 8 * contrat.jours_travail
+        return contrat.taux_horaire * contrat.heures_travail * contrat.jours_travail
     elif contrat.mode_paiement == 'M':
         return contrat.salaire_mensuel
     return 0
@@ -141,5 +126,3 @@ class DemandeEmploye(models.Model):
     competences_recherchees = models.CharField(max_length=255)
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES, default='EN_ATTENTE')
 
-    def __str__(self):
-        return f"Demande {self.id} - {self.titre}"
