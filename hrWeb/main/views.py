@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
 from hrWeb.settings import EMAIL_HOST_USER
-from .models import Client, Competence, Compte, Contrat, Entreprise, FicheDePaie, Admin, Departement, Role, Salarie
+from .models import Clause, Client, Competence, Compte, Contrat, EmailSettings, Entreprise, FicheDePaie, Admin, Departement, Role, Salarie
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
@@ -11,6 +11,10 @@ from django.contrib.auth.hashers import make_password
 import random
 import string
 from django.db.models import Q
+from django.core.mail import get_connection
+from django.core.mail.backends.smtp import EmailBackend
+from django.db.models import Count
+
 # Create your views here.
 
 # Ajouter une vue de succès simple
@@ -137,18 +141,11 @@ def creer_admin(request):
         )
         
         # Envoyer l'email avec les identifiants de connexion
-        subject = "Bienvenue sur HrBridge"
-        message = f'Salutations,\n\nVotre compte a été créé.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe'
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [email]
-
         if email:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                recipient_list,
-                fail_silently=False,
+            envoyer_email(
+                subject="Bienvenue sur HrBridge",
+                message=f'Bienvenue {nom_admin} {prenom_admin},\n\nVotre compte a été créé.\n\nVoici vos identifiants de connexion.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe',
+                recipient_list=[email]
             )
         else:
             # Logique d'envoi par WhatsApp (à implémenter)
@@ -207,18 +204,11 @@ def creer_salarie(request):
         )
         
         # Envoyer l'email avec les identifiants de connexion
-        subject = "Bienvenue sur HrBridge"
-        message = f'Salutations,\n\nVotre compte a été créé.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe'
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [email]
-
         if email:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                recipient_list,
-                fail_silently=False,
+            envoyer_email(
+                subject="Bienvenue sur HrBridge",
+                message=f'Bienvenue {nom_salarie} {prenom_salarie},\n\nVotre compte a été créé.\n\nVoici vos identifiants de connexion.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe',
+                recipient_list=[email]
             )
         else:
             # Logique d'envoi par WhatsApp (à implémenter)
@@ -294,18 +284,11 @@ def creer_partenaire(request):
         )
         
         # Envoyer l'email avec les identifiants de connexion
-        subject = "Bienvenue sur HrBridge"
-        message = f'Salutations,\n\nVotre compte a été créé.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe'
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [email]
-
         if email:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                recipient_list,
-                fail_silently=False,
+            envoyer_email(
+                subject="Bienvenue sur HrBridge",
+                message=f'Nous souhaitons la bienvenue à {nom_entreprise} sur notre plateforme,\n\nVotre compte a été créé.\n\nVoici vos identifiants de connexion.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe',
+                recipient_list=[email]
             )
         else:
             # Logique d'envoi par WhatsApp (à implémenter)
@@ -365,18 +348,11 @@ def creer_client(request):
         )
         
         # Envoyer l'email avec les identifiants de connexion
-        subject = "Bienvenue sur HrBridge"
-        message = f'Salutations,\n\nVotre compte a été créé.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe'
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [email]
-
         if email:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                recipient_list,
-                fail_silently=False,
+            envoyer_email(
+                subject="Bienvenue sur HrBridge",
+                message=f'Nous souhaitons la bienvenue à {nom_client} {prenom_client} sur notre plateforme,\n\nVotre compte a été créé.\n\nVoici vos identifiants de connexion.\n\nNom d\'utilisateur: {nom_utilisateur}\nMot de passe: {mot_de_passe}\n\nCordialement,\nL\'équipe',
+                recipient_list=[email]
             )
         else:
             # Logique d'envoi par WhatsApp (à implémenter)
@@ -768,13 +744,59 @@ def creer_contrat(request):
             statut=statut
         )
         contrat.save()
+        
+        clauses = request.POST.getlist('clauses')
+        for clause in clauses:
+            Clause.objects.create(contrat=contrat, clause=clause)
 
         messages.success(request, 'Le contrat a été établie avec succès.')
         return redirect('creer_contrat')
-
     salaries = Salarie.objects.all()
     entreprises = Entreprise.objects.all()
     return render(request, 'pages/admin/pages/creer/creer_contrat.html', {'salaries': salaries, 'entreprises': entreprises})
+
+#Création de la vue pour affecter un salarié 
+def affecter_salarie(request, salarie_id):
+    salarie = get_object_or_404(Salarie, id=salarie_id)
+    if request.method == 'POST':
+        entreprise_id = request.POST['entreprise']
+        date_debut = request.POST['date_debut']
+        date_fin = request.POST['date_fin']
+        type_contrat = request.POST['type_contrat']
+        mode_paiement = request.POST['mode_paiement']
+        taux_horaire = request.POST.get('taux_horaire')
+        heures_travail = request.POST.get('heures_travail')
+        jours_travail = request.POST.get('jours_travail')
+        salaire_mensuel = request.POST.get('salaire_mensuel')
+        statut = 'actif'
+        
+        # Convertir les champs numériques ou définir None si vide
+        taux_horaire = float(taux_horaire) if taux_horaire else None
+        heures_travail = int(heures_travail) if heures_travail else None
+        jours_travail = int(jours_travail) if jours_travail else None
+        salaire_mensuel = float(salaire_mensuel) if salaire_mensuel else None
+        
+        entreprise = Entreprise.objects.get(id=entreprise_id)
+
+        contrat = Contrat.objects.create(
+            salarie=salarie,
+            entreprise=entreprise,
+            date_debut=date_debut,
+            date_fin=date_fin,
+            type_contrat=type_contrat,
+            mode_paiement=mode_paiement,
+            taux_horaire=taux_horaire,
+            heures_travail=heures_travail,
+            jours_travail=jours_travail,
+            salaire_mensuel=salaire_mensuel,
+            statut=statut
+        )
+        contrat.save()
+
+        messages.success(request, 'Le contrat a été établie avec succès.')
+        return redirect('affecter_salare')
+    entreprises = Entreprise.objects.all()
+    return render(request, 'pages/admin/pages/liste/liste_salarie.html', {'salarie': salarie, 'entreprises': entreprises})
 
 
 def creer_fichepaie(request):
@@ -819,7 +841,7 @@ def liste_admin(request):
 #Fonction pour retourner la vue vers la page de la liste des salariés
 def liste_salarie(request):
     salaries = Salarie.objects.select_related('compte').prefetch_related('competence_set').all()
-    
+    entreprises = Entreprise.objects.all()
     # Recherche
     query = request.GET.get('q')
     if query:
@@ -832,6 +854,7 @@ def liste_salarie(request):
 
     context = {
         'salaries': salaries,
+        'entreprises':entreprises
     }
     return render(request,'pages/admin/pages/liste/liste_salarie.html', context)
 
@@ -869,6 +892,33 @@ def liste_client(request):
     }
     return render(request,'pages/admin/pages/liste/liste_client.html',context)
 
+#Fonction pour retourner la vue vers la page de la liste des contrats
+def liste_contrat(request):
+    contrats = Contrat.objects.all()
+
+    # Recherche
+    query = request.GET.get('q')
+    if query:
+        contrats = contrats.filter(
+            Q(date_debut__icontains=query)|
+            Q(date_fin__icontains=query)
+        )
+
+    context = {
+    'contrats': contrats
+    }
+    return render(request,'pages/admin/pages/liste/liste_contrat.html',context)
+
+#Fonction pour retourner la vue vers la page de la liste des fiches de paies
+def liste_fichePaie(request):
+    departements = Departement.objects.annotate(total_employes=Count('salarie'))
+    return render(request, 'pages/admin/pages/liste/liste_fichepaie.html', {'departements': departements})
+
+#Fonction pour retourner la vue vers la page de la liste des contrats
+def liste_departements(request):
+    departements = Departement.objects.annotate(total_employes=Count('salarie'))
+    return render(request, 'pages/admin/pages/liste/liste_departement.html', {'departements': departements})
+
 #Fonction pour retourner la vue vers la page de la liste des salariés
 def liste_role(request):
     roles = Role.objects.all()
@@ -884,6 +934,78 @@ def liste_role(request):
         'roles': roles,
     }
     return render(request,'pages/admin/pages/liste/liste_role.html', context)
+
+# Modifier un département
+def modifier_departement(request, departement_id):
+    departement = get_object_or_404(Departement, id=departement_id)
+
+    if request.method == 'POST':
+        nom_dep = request.POST.get('nom_dep')
+        departement.nom_dep = nom_dep
+        departement.save()
+        messages.success(request, 'Le département a été mis à jour avec succès.')
+        return redirect('liste_departements')   # Rediriger vers la liste des départements après modification
+
+    return render(request, 'pages/admin/pages/liste/liste_departement.html', {'departement': departement})
+
+# Modifier un rôle
+def modifier_role(request, role_id):
+    role = get_object_or_404(Role, id=role_id)
+
+    if request.method == 'POST':
+        nom_role = request.POST.get('nom_role')
+        niv_permission = request.POST.get('niv_permission')
+        acce_page = request.POST.get('acce_page')
+        role.nom_role = nom_role
+        role.niv_permission = niv_permission
+        role.acce_page = acce_page
+        role.save()
+        
+        messages.success(request, 'Le rôle a été mis à jour avec succès.')
+        return redirect('liste_role') # Rediriger vers la liste des rôles après modification
+
+    return render(request, 'pages/admin/pages/liste/liste_role.html', {'role': role})
+
+# Modifier un contrat
+def modifier_contrat(request, contrat_id):
+    contrat = get_object_or_404(Contrat, id=contrat_id)
+
+    if request.method == 'POST':
+        date_debut = request.POST.get('date_debut')
+        date_fin = request.POST.get('date_fin')
+        type_contrat = request.POST.get('type_contrat')
+        mode_paiement = request.POST.get('mode_paiement')
+        taux_horaire = request.POST.get('taux_horaire')
+        heures_travail = request.POST.get('heures_travail')
+        jours_travail = request.POST.get('jours_travail')
+        salaire_mensuel = request.POST.get('salaire_mensuel')
+        statut = request.POST.get('statut')
+        salarie_id = request.POST.get('salarie')
+        entreprise_id = request.POST.get('entreprise')
+        
+        # Convertir les champs numériques ou définir None si vide
+        taux_horaire = float(taux_horaire) if taux_horaire else None
+        heures_travail = int(heures_travail) if heures_travail else None
+        jours_travail = int(jours_travail) if jours_travail else None
+        salaire_mensuel = float(salaire_mensuel) if salaire_mensuel else None
+        
+        contrat.date_debut = date_debut
+        contrat.date_fin = date_fin
+        contrat.type_contrat = type_contrat
+        contrat.mode_paiement = mode_paiement
+        contrat.taux_horaire = taux_horaire
+        contrat.heures_travail = heures_travail
+        contrat.jours_travail = jours_travail
+        contrat.salaire_mensuel = salaire_mensuel
+        contrat.statut = statut
+        contrat.salarie_id = salarie_id
+        contrat.entreprise_id = entreprise_id
+        contrat.save()
+        
+        messages.success(request, 'Le contrat a été mis à jour avec succès.')
+        return redirect('liste_contrat') # Rediriger vers la liste des contrats après modification
+
+    return render(request, 'pages/admin/pages/liste/liste_contrat.html', {'contrat': contrat})
 
 #Fonction me permettant d'avoir tout les contrat en relations en avec un salarié
 def contrats_en_cours(request, salarie_id):
@@ -905,3 +1027,86 @@ def fiche_paie_impayer(request, salarie_id):
     salarie = get_object_or_404(Salarie, id=salarie_id)
     fiches_de_paie = FicheDePaie.objects.filter(salarie=salarie, montant=0)
     return render(request, 'pages/admin/pages/liste/liste_fiche_paie_impayer.html', {'fiches_de_paie': fiches_de_paie, 'salarie': salarie})
+
+
+#Fonction me permettant d'avoir tout les contrat en relations en avec un  partenaire
+def contrats_en_cours_partenaire(request, entreprise_id):
+    entreprise = get_object_or_404(Entreprise, id=entreprise_id)
+    contrats = Contrat.objects.filter(entreprise=entreprise, statut='actif')
+    return render(request, 'pages/admin/pages/liste/liste_contrat_en_cours_partenaire.html', {'contrats': contrats, 'entreprise': entreprise})
+
+def contrats_termines_partenaire(request, entreprise_id):
+    entreprise = get_object_or_404(Entreprise, id=entreprise_id)
+    contrats = Contrat.objects.filter(entreprise=entreprise, statut='terminer')
+    return render(request, 'pages/admin/pages/liste/liste_contrat_terminer_partenaire.html', {'contrats': contrats, 'entreprise': entreprise})
+
+def fiche_paie_payer_partenaire(request, entreprise_id):
+    entreprise = get_object_or_404(Entreprise, id=entreprise_id)
+    fiches_de_paie = FicheDePaie.objects.filter(entreprise=entreprise, montant__gt=0)
+    return render(request, 'pages/admin/pages/liste/liste_fiche_paie_payer_partenaire.html', {'fiches_de_paie': fiches_de_paie, 'entreprise': entreprise})
+
+def fiche_paie_impayer_partenaire(request, entreprise_id):
+    entreprise = get_object_or_404(Entreprise, id=entreprise_id)
+    fiches_de_paie = FicheDePaie.objects.filter(entreprise=entreprise, montant=0)
+    return render(request, 'pages/admin/pages/liste/liste_fiche_paie_impayer_partenaire.html', {'fiches_de_paie': fiches_de_paie, 'entreprise': entreprise})
+
+#Fonction pour configurer les éméteurs d'envoie d'email
+def configurer_email(request):
+    email_settings, created = EmailSettings.objects.get_or_create(id=request.POST.get('id', 1))  # Adjust to fetch by id
+
+    if request.method == 'POST':
+        email_settings.host = request.POST.get('host')
+        email_settings.port = request.POST.get('port')
+        email_settings.host_user = request.POST.get('host_user')
+        email_settings.host_password = request.POST.get('host_password')
+        email_settings.use_tls = 'use_tls' in request.POST
+        email_settings.use_ssl = 'use_ssl' in request.POST
+        email_settings.save()
+
+        messages.success(request, 'Email mis à jour avec success')
+        return redirect('configurer_email')
+
+    return render(request, 'pages/admin/setting/email.html', {'email_settings': email_settings})
+
+#Fonction pour choisir l'email principale qui envoie les messages
+def general_configuration(request):
+    email_settings_list = EmailSettings.objects.all()
+    if request.method == 'POST':
+        selected_emetteur = request.POST.get('email_settings')
+        return redirect('envoyer_email', emetteur_id=selected_emetteur)
+
+    return render(request, 'pages/admin/setting/general.html', {'email_settings_list': email_settings_list})
+
+# Fonction générale d'envoi des emails
+def envoyer_email(subject, message, recipient_list, emetteur_id):
+    try:
+        # Récupération des paramètres de l'émetteur
+        email_settings = EmailSettings.objects.get(id=emetteur_id)
+        
+        # Configuration de la connexion email
+        email_backend = get_connection(
+            backend='django.core.mail.backends.smtp.EmailBackend',
+            host=email_settings.host,
+            port=email_settings.port,
+            username=email_settings.host_user,
+            password=email_settings.host_password,
+            use_tls=email_settings.use_tls,
+            use_ssl=email_settings.use_ssl,
+            fail_silently=False,
+        )
+
+        # Envoi de l'email
+        send_mail(
+            subject,
+            message,
+            email_settings.host_user,
+            recipient_list,
+            connection=email_backend,
+        )
+        return True
+    except EmailSettings.DoesNotExist:
+        print("Email settings not configured.")
+        return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False

@@ -14,7 +14,7 @@
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/users1.svg' %}" alt="img"><span> Rôle et département</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'liste_role' %}">Liste Rôles</a></li>
-                            <li><a href="{% url 'liste_departements' %}">Liste Départements</a></li>
+                            <li><a href="{% url 'liste_departements' %}" class="active">Liste Départements</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
@@ -22,7 +22,7 @@
                         <ul>
                             <li><a href="{% url 'liste_admin' %}">Liste Administrateur</a></li>
                             <li><a href="{% url 'liste_salarie' %}">Liste Salariés</a></li>
-                            <li><a href="{% url 'liste_partenaire' %}" class="active" >Liste Partenaires</a></li>
+                            <li><a href="{% url 'liste_partenaire' %}">Liste Partenaires</a></li>
                             <li><a href="{% url 'liste_client' %}">Liste Client</a></li>
                         </ul>
                     </li>
@@ -64,11 +64,11 @@
     <div class="content">
         <div class="page-header">
             <div class="page-title">
-                <h4>Liste des Partenaires</h4>
-                <h6>Gérer les partenaires</h6>
+                <h4>Liste des différents départements</h4>
+                <h6>Gérer les départements</h6>
             </div>
             <div class="page-btn">
-                <a href="{% url 'creer_partenaire' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}" alt="img">Ajouter</a>
+                <a href="{% url 'creer_client' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}" alt="img">Ajouter</a>
             </div>
         </div>
         {% for message in messages %}
@@ -93,40 +93,66 @@
                     <table class="table  datanew">
                         <thead>
                             <tr>
-                                <th>Nom entreprise</th>
-                                <th>Email</th>
-                                <th>Téléphone</th>
-                                <th>Adresse</th>
-                                <th>Statut</th>
-                                <th>Options</th>
+                                <th>Nom du Département</th>
+                                <th>Nombre Total d'Employés</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for entreprise in entreprises %}
+                            {% for departement in departements %}
                             <tr>
-                                <td>{{ entreprise.nom_entreprise }}</td>
-                                <td>{{ entreprise.compte.email }}</td>
-                                <td>{{ entreprise.compte.telephone }}</td>
-                                <td>{{ entreprise.compte.adresse }}</td>
+                                <td>{{ departement.nom_dep }}</td>
+                                <td>{{ departement.total_employes }}</td>
                                 <td>
-                                    <a href="{% url 'statut' entreprise.compte.id %}">
-                                        {% if entreprise.compte.is_active %}
-                                            <span class="bg-lightgreen badges">Activer</span>
-                                        {% else %}
-                                            <span class="bg-lightred badges">Bloquer</span>
-                                        {% endif %}
+                                    <a class="me-3" href="#" data-toggle="modal" data-target="#modifierDepartement{{ departement.id }}">
+                                        <img src="{% static 'assets/img/icons/edit.svg' %}" alt="img">
                                     </a>
-                                </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Options
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="{% url 'contrats_en_cours_partenaire' entreprise.id %}">Contrats en cours</a>
-                                            <a class="dropdown-item" href="{% url 'contrats_termines_partenaire' entreprise.id %}">Contrats terminés</a>
-                                            <a class="dropdown-item" href="{% url 'fiche_paie_payer_partenaire' entreprise.id %}">Fiches de paie payées</a>
-                                            <a class="dropdown-item" href="{% url 'fiche_paie_impayer_partenaire' entreprise.id %}">Fiches de paie non payées</a>
+                                    <a class="me-3 confirm-text" href="javascript:void(0);">
+                                        <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img">
+                                    </a>
+                                    <!-- The Modal -->
+                                    <div class="modal fade" id="modifierDepartement{{ departement.id }}">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <!-- Modal Header -->
+                                                <div class="modal-header">
+                                                <h4 class="modal-title">Modifier le département</h4>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <!-- Modal body -->
+                                                <div class="modal-body">
+                                                    <form action="{% url 'modifier_departement' departement.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-sm-6 col-12">
+                                                                        <div class="form-group">
+                                                                            <label for="nom_dep">Nom du Département:</label>
+                                                                            <input type="text" id="nom_dep" name="nom_dep" value="{{ departement.nom_dep }}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-12">
+                                                                        <div class="form-group">
+                                                                            <label for="mode_paiement">Payement par</label>
+                                                                            <select class="select" name="mode_paiement" required>
+                                                                                <option value="">Selectionner...</option>
+                                                                                <option value="H">Heure</option>
+                                                                                <option value="J">Jour</option>
+                                                                                <option value="M">Mois</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-12">
+                                                                        <button type="submit" class="btn btn-primary me-2">Enregistrer</button>
+                                                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>

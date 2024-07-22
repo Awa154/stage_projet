@@ -10,11 +10,10 @@
                         <a href="#"><img src="{% static 'assets/img/icons/dashboard.svg' %}" alt="img"><span> Tableau de bord</span> </a>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/users1.svg' %}" alt="img"><span> Rôle et département</span> <span class="menu-arrow"></span></a>
+                        <a href="javascript:void(0);" class="active"><img src="{% static 'assets/img/icons/users1.svg' %}" alt="img"><span> Rôle et département</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'liste_role' %}">Liste Rôles</a></li>
-                            <li><a href="{% url 'creer_departement' %}" class="active">Créer un département</a></li>
-                            <li><a href="#">Liste Départements</a></li>
+                            <li><a href="{% url 'liste_departements' %}">Liste Départements</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
@@ -32,14 +31,13 @@
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/purchase1.svg' %}" alt="img"><span> Contrats</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'creer_contrat' %}">Créer</a></li>
-                            <li><a href="#">Liste</a></li>
+                            <li><a href="{% url 'liste_contrat' %}">Liste</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/expense1.svg' %}" alt="img"><span> Fiche de paie</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="#">Ajouter</a></li>
-                            <li><a href="#">Liste</a></li>
+                            <li><a href="{% url 'liste_fichePaie' %}">Liste</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
@@ -52,8 +50,8 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/settings.svg' %}" alt="img"><span> Paramètres</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="#">Général</a></li>
-                            <li><a href="#">Email</a></li>
+                            <li><a href="{% url 'general_configuration' %}">Général</a></li>
+                            <li><a href="{% url 'configurer_email' %}">Email</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -90,7 +88,7 @@
                         <div class="col-sm-6 col-12">
                             <div class="form-group">
                                 <label for="nom_dep">Nom du département:</label>
-                                <input type="text" class="nom_dep" id="nom_dep" name="nom_dep" required>
+                                <input type="text" class="nom_dep" id="nom_dep" name="nom_dep" placeholder="Veuillez saisir le nom du département" required>
                             </div>
                         </div>
                         <div class="col-lg-12">

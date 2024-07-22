@@ -86,6 +86,7 @@ class Contrat(models.Model):
     date_debut = models.DateField()
     date_fin = models.DateField()
     type_contrat = models.CharField(max_length=100)
+    fonction_salarie= models.CharField(max_length=100, null=True, blank=True)
     mode_paiement = models.CharField(max_length=50, choices=PAIE_CHOICES)
     taux_horaire = models.FloatField(null=True, blank=True)
     heures_travail = models.IntegerField(null=True, blank=True)
@@ -94,12 +95,18 @@ class Contrat(models.Model):
     statut = models.CharField(max_length=10, default='En cours')
     salarie = models.ForeignKey(Salarie, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    
+class Clause(models.Model):
+    contrat = models.ForeignKey(Contrat, on_delete=models.CASCADE)
+    clause = models.TextField(null=True, blank=True)
 
 class FicheDePaie(models.Model):
-    salarie = models.ForeignKey(Salarie, on_delete=models.CASCADE)
+    contrat = models.ForeignKey(Contrat, on_delete=models.CASCADE)
     datePaiement = models.DateField()
+    echeance = models.DateField(null=True, blank=True)
+    detail= models.TextField(null=True, blank=True)
     montant = models.FloatField()
-    
+    statut = models.CharField(max_length=10, default='Impayer')
 #Méthode pour calculer le salaire en fonction du mode payement d'un employé
 def calculer_montant_final(self):
     contrat = Contrat.objects.filter(salarie=self.salarie, statut='actif').first()
@@ -125,4 +132,15 @@ class DemandeEmploye(models.Model):
     details = models.TextField()
     competences_recherchees = models.CharField(max_length=255)
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES, default='EN_ATTENTE')
+    
+class EmailSettings(models.Model):
+    host = models.CharField(max_length=255)
+    port = models.IntegerField(default=587)
+    host_user = models.CharField(max_length=255)
+    host_password = models.CharField(max_length=255)
+    use_tls = models.BooleanField(default=True)
+    use_ssl = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Email Settings: {self.host}"
 

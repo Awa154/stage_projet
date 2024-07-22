@@ -23,5 +23,16 @@
         {% endblock content %}
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Convertir la date au format YYYY-MM-DD avant l'envoi du formulaire
+        $('#dateForm').submit(function(e) {
+            var dateInput = $('#dateInput').val();
+            // Utilisez 'DD-MM-YYYY' pour le format d'entrée et 'YYYY-MM-DD' pour le format de sortie
+            var formattedDate = moment(dateInput, 'DD-MM-YYYY').format('YYYY-MM-DD');
+            $('#dateInput').val(formattedDate);
+        });
+    });
+</script>
 </body>
 </html>

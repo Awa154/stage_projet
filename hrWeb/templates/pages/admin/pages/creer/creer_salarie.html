@@ -14,12 +14,11 @@
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/users1.svg' %}" alt="img"><span> Rôle et département</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'liste_role' %}">Liste Rôles</a></li>
-                            <li><a href="{% url 'creer_departement' %}">Créer un département</a></li>
-                            <li><a href="#">Liste Départements</a></li>
+                            <li><a href="{% url 'liste_departements' %}">Liste Départements</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/users1.svg' %}" alt="img"><span> Utilisateurs</span> <span class="menu-arrow"></span></a>
+                        <a href="javascript:void(0);" class="active"><img src="{% static 'assets/img/icons/users1.svg' %}" alt="img"><span> Utilisateurs</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'liste_admin' %}">Liste Administrateur</a></li>
                             <li><a href="{% url 'liste_salarie' %}">Liste Salariés</a></li>
@@ -31,14 +30,13 @@
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/purchase1.svg' %}" alt="img"><span> Contrats</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'creer_contrat' %}">Créer</a></li>
-                            <li><a href="#">Liste</a></li>
+                            <li><a href="{% url 'liste_contrat' %}">Liste</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/expense1.svg' %}" alt="img"><span> Fiche de paie</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="#">Ajouter</a></li>
-                            <li><a href="#">Liste</a></li>
+                            <li><a href="{% url 'liste_fichePaie' %}">Liste</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
@@ -51,8 +49,8 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/settings.svg' %}" alt="img"><span> Paramètres</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="#">Général</a></li>
-                            <li><a href="#">Email</a></li>
+                            <li><a href="{% url 'general_configuration' %}">Général</a></li>
+                            <li><a href="{% url 'configurer_email' %}">Email</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -79,7 +77,7 @@
                 <h2>Ajouter un salarié</h2> 
             </div>
         </div>
-        <form action="{% url 'creer_salarie' %}" method="POST">
+        <form id="dateForm" action="{% url 'creer_salarie' %}" method="POST">
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
@@ -137,14 +135,24 @@
                         </div>
                         <div class="col-lg-3 col-sm-6 col-12">
                             <div class="form-group">
-                                <label for="dateNaissance">Date de Naissance</label>
-                                <input type="date" class="form-control" id="dateNaissance" name="dateNaissance">
+                                <label for="dateNaissance">Date de Naissance </label>
+                                <div class="input-groupicon" id="datetimepicker">
+                                    <input type="text" placeholder="JJ-MM-AAAA" class="datetimepicker" id="dateNaissance" name="dateNaissance">
+                                    <div class="addonset">
+                                        <img src="{% static 'assets/img/icons/calendars.svg' %}" alt="img">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6 col-12">
                             <div class="form-group">
-                                <label for="dateEmbauche">Date d'embauche</label>
-                                <input type="date" class="form-control" id="dateEmbauche" name="dateEmbauche">
+                                <label for="dateEmbauche">Date d'embauche </label>
+                                <div class="input-groupicon" id="datetimepicker">
+                                    <input type="text" placeholder="JJ-MM-AAAA" class="datetimepicker" id="dateEmbauche" name="dateEmbauche">
+                                    <div class="addonset">
+                                        <img src="{% static 'assets/img/icons/calendars.svg' %}" alt="img">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6 col-12">

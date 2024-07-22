@@ -24,19 +24,4 @@
         </div>
     </form>
 </div>
-<!-- JavaScript pour faire disparaître les alertes après 5 secondes -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const alertElements = document.querySelectorAll('.alert');
-        alertElements.forEach(function(alert) {
-            setTimeout(function() {
-                alert.style.transition = 'opacity 0.5s ease';
-                alert.style.opacity = '0';
-                setTimeout(function() {
-                    alert.remove();
-                }, 500); // Correspond à la durée de la transition
-            }, 5000); // 5000 ms = 5 secondes
-        });
-    });
-</script>
 {% endblock content %}

@@ -27,7 +27,13 @@ urlpatterns = [
     path('creer_partenaire', creer_partenaire, name="creer_partenaire"),
     path('creer_client', creer_client, name="creer_client"),
     path('creer_contrat', creer_contrat, name="creer_contrat"),
+    path('creer_contrat/<int:affecter_salarie>/', affecter_salarie, name="affecter_salarie"),
     path('creer_fichepaie', creer_fichepaie, name="creer_fichepaie"),
+    
+#Route vers les méthodes de modification gérer par l'admin et ses représentants
+    path('modifier_departement/<int:departement_id>/',modifier_departement, name='modifier_departement'),
+    path('modifier_role/<int:role_id>/',modifier_role, name='modifier_role'),
+    path('modifier_contrat/<int:contrat_id>/',modifier_contrat, name='modifier_contrat'),
     
     #Route vers les pages de profile
     path('profile_admin', profile_admin, name="profile_admin"),
@@ -40,10 +46,20 @@ urlpatterns = [
     path('liste_salarie', liste_salarie, name="liste_salarie"),
     path('liste_partenaire', liste_partenaire, name="liste_partenaire"),
     path('liste_client', liste_client, name="liste_client"), 
+    path('liste_contrat', liste_contrat, name="liste_contrat"),
+    path('liste_departements', liste_departements, name="liste_departements"),
     path('liste_role', liste_role, name="liste_role"), 
+    path('liste_fichePaie', liste_fichePaie, name="liste_fichePaie"), 
+    path('contrats_en_cours_partenaire/<int:entreprise_id>/', contrats_en_cours_partenaire, name="contrats_en_cours_partenaire"),
+    path('contrats_termines_partenaire/<int:entreprise_id>/', contrats_termines_partenaire, name="contrats_termines_partenaire"),
+    path('fiche_paie_payer_partenaire/<int:entreprise_id>/', fiche_paie_payer_partenaire, name="fiche_paie_payer_partenaire"),
+    path('fiche_paie_impayer_partenaire/<int:entreprise_id>/', fiche_paie_impayer_partenaire, name="fiche_paie_impayer_partenaire"),
     path('contrats_en_cours/<int:salarie_id>/', contrats_en_cours, name="contrats_en_cours"),
     path('contrats_termines/<int:salarie_id>/', contrats_termines, name="contrats_termines"),
     path('fiche_paie_payer/<int:salarie_id>/', fiche_paie_payer, name="fiche_paie_payer"),
     path('fiche_paie_impayer/<int:salarie_id>/', fiche_paie_impayer, name="fiche_paie_impayer"),
+    path('configurer_email', configurer_email, name="configurer_email"),
+    path('envoyer_email/<int:emetteur_id>/<str:subject>/<str:message>/<str:recipient_list>/', envoyer_email, name="envoyer_email"),
+    path('general_configuration', general_configuration, name="general_configuration"),
 ]
 
