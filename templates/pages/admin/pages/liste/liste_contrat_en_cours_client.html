@@ -27,14 +27,14 @@
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/purchase1.svg' %}" alt="img"><span> Contrats</span> <span class="menu-arrow"></span></a>
+                        <a href="javascript:void(0);" class="active"><img src="{% static 'assets/img/icons/purchase1.svg' %}" alt="img"><span> Contrats</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'creer_contrat' %}">Créer</a></li>
-                            <li><a href="{% url 'liste_contrat' %}">Liste</a></li>
+                            <li><a href="{% url 'liste_contrat' %}" class="active">Liste</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);" class="active"><img src="{% static 'assets/img/icons/expense1.svg' %}" alt="img"><span> Fiche de paie</span> <span class="menu-arrow"></span></a>
+                        <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/expense1.svg' %}" alt="img"><span> Fiche de paie</span> <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a href="{% url 'liste_fichePaie' %}">Liste</a></li>
                         </ul>
@@ -49,8 +49,7 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/settings.svg' %}" alt="img"><span> Paramètres</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="{% url 'general_configuration' %}">Général</a></li>
-                            <li><a href="{% url 'configuer_email' %}">Email</a></li>
+                            <li><a href="{% url 'configurer_email' %}">Email</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -64,15 +63,12 @@
     <div class="content">
         <div class="page-header">
             <div class="page-title">
-                <h4>Liste des Contrats en cours pour {{ salarie.nom_salarie }} {{ salarie.prenom_salarie }}</h4>
+                <h3>Liste des Contrats en cours pour le client {{ client.nom_client }} {{ client.prenom_client }}</h3>
             </div>
             <div class="page-btn">
-                <a href="{% url 'liste_salarie' %}" class="btn btn-cancel">Retour</a>
+                <a href="{% url 'liste_client' %}" class="btn btn-cancel">Retour</a>
             </div>
         </div>
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
         <div class="card">
             <div class="card-body">
                 <div class="table-top">
@@ -92,28 +88,37 @@
                     <table class="table  datanew">
                         <thead>
                             <tr>
-                                <th>Date de début</th>
-                                <th>Date de fin</th>
-                                <th>Type de contrat</th>
-                                <th>Mode de paiement</th>
-                                <th>Taux horaire</th>
-                                <th>Heures de travail</th>
-                                <th>Jours de travail</th>
-                                <th>Salaire mensuel</th>
-                            </tr>
+                                <th>Contrats</th>
                         </thead>
                         <tbody>
                             {% for contrat in contrats %}
                             <tr>
-                                <td>{{ contrat.date_debut }}</td>
-                                <td>{{ contrat.date_fin }}</td>
-                                <td>{{ contrat.type_contrat }}</td>
-                                <td>{{ contrat.mode_paiement }}</td>
-                                <td>{{ contrat.taux_horaire }}</td>
-                                <td>{{ contrat.heures_travail }}</td>
-                                <td>{{ contrat.jours_travail }}</td>
-                                <td>{{ contrat.salaire_mensuel }}</td>
-                            </tr>
+                                <td>
+                                    Salarié affecté: {{ contrat.salarie.nom_salarie }} {{ contrat.salarie.prenom_salarie }}
+                                    <br>
+                                    Date début:{{ contrat.date_debut }}
+                                    <br>
+                                    Date fin: {{ contrat.date_fin }}
+                                    Type de contrat: {{ contrat.type_contrat }}
+                                    <br>
+                                    Fonction du salarié: {{ contrat.fonction_salarie }}
+                                    <br>
+                                    Paiement par: {{ contrat.get_mode_paiement_display }}
+                                    <br>
+                                    Salaire de base: {% if contrat.mode_paiement == 'H' %}
+                                                {{ contrat.taux_horaire }} / heure
+                                            {% elif contrat.mode_paiement == 'J' %}
+                                                {{ contrat.taux_horaire }} / jour
+                                            {% elif contrat.mode_paiement == 'M' %}
+                                                {{ contrat.salaire_mensuel }} / mois
+                                            {% endif %}
+                                    <br>
+                                    Clauses: {% for clause in contrat.clause_set.all %}
+                                    {{ clause.clause }}{% if not forloop.last %}, {% endif %}
+                                    <br>
+                                    {% endfor %}
+                                </td>
+                            </tr> 
                             {% endfor %}
                         </tbody>
                     </table>

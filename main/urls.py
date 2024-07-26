@@ -49,10 +49,13 @@ urlpatterns = [
     path('creer_partenaire', creer_partenaire, name="creer_partenaire"),
     path('creer_client', creer_client, name="creer_client"),
     path('affecter_entreprise_salarie/<int:entreprise_id>/', affecter_entreprise_salarie, name="affecter_entreprise_salarie"),
+    path('affecter_client_salarie/<int:client_id>/', affecter_client_salarie, name="affecter_client_salarie"),
     path('liste_partenaire', liste_partenaire, name="liste_partenaire"),
     path('liste_client', liste_client, name="liste_client"),
     path('contrats_en_cours_partenaire/<int:entreprise_id>/', contrats_en_cours_partenaire, name="contrats_en_cours_partenaire"),
-    path('contrats_termines_partenaire/<int:entreprise_id>/', contrats_termines_partenaire, name="contrats_termines_partenaire"), 
+    path('contrats_termines_partenaire/<int:entreprise_id>/', contrats_termines_partenaire, name="contrats_termines_partenaire"),
+    path('contrats_en_cours_client/<int:client_id>/', contrats_en_cours_client, name="contrats_en_cours_client"),
+    path('contrats_termines_client/<int:client_id>/', contrats_termines_client, name="contrats_termines_client"),  
     
     #Route vers les vue de la gestion des contrats par l'admin
     path('creer_contrat', creer_contrat, name="creer_contrat"),
@@ -61,12 +64,12 @@ urlpatterns = [
     path('liste_contrat', liste_contrat, name="liste_contrat"),
     path('contrats_en_cours/<int:salarie_id>/', contrats_en_cours, name="contrats_en_cours"),
     path('contrats_termines/<int:salarie_id>/', contrats_termines, name="contrats_termines"),
+    path('envoyer_contract_pdf/<int:contrat_id>/', envoyer_contract_pdf, name='envoyer_contract_pdf'),
     
     #Route vers vues de gestion de fiche de paies gérer par l'admin
     path('liste_fichePaie', liste_fichePaie, name="liste_fichePaie"), 
     
     #Route vers les vues de configurations d'email
     path('configurer_email', configurer_email, name="configurer_email"),
-    path('general_configuration', general_configuration, name="general_configuration"),
 ]
 

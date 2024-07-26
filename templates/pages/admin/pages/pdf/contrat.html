@@ -1,0 +1,54 @@
+<!-- templates/contrat_template.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Contrat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .contract-details, .clause-details {
+            margin: 20px 0;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contrat de Travail</h1>
+    <h2>Type de contrat : {{ contrat.type_contrat }}{{ contrat.entreprise.nom_entreprise }}</h2>
+    
+    <div class="contract-details">
+        <p><strong>Date de début :</strong> {{ contrat.date_debut }}</p>
+        <p><strong>Date de fin :</strong> {{ contrat.date_fin }}</p>
+        <p><strong>Type de contrat :</strong> {{ contrat.type_contrat }}</p>
+        <p><strong>Fonction :</strong> {{ contrat.fonction_salarie }}</p>
+        <p><strong>Mode de paiement :</strong> {{ contrat.mode_paiement }}</p>
+        <p><strong>Taux horaire :</strong> {{ contrat.taux_horaire }}</p>
+        <p><strong>Heures de travail :</strong> {{ contrat.heures_travail }}</p>
+        <p><strong>Jours de travail :</strong> {{ contrat.jours_travail }}</p>
+        <p><strong>Taux journalier :</strong> {{ contrat.taux_journalier }}</p>
+        <p><strong>Salaire mensuel :</strong> {{ contrat.salaire_mensuel }}</p>
+    </div>
+
+    <div class="clause-details">
+        <p class="section-title">Clauses</p>
+        {% for clause in contrat.clause_set.all %}
+            <p>{{ clause.clause }}</p>
+        {% endfor %}
+    </div>
+    
+    <div class="signature-section">
+        <p><strong>Signature de l'employé :</strong></p>
+        <p>{{ contrat.salarie.nom_salarie }} {{ contrat.salarie.prenom_salarie }}</p>
+    </div>
+</body>
+</html>

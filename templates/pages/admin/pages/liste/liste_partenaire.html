@@ -49,7 +49,6 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/settings.svg' %}" alt="img"><span> Paramètres</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="{% url 'general_configuration' %}">Général</a></li>
                             <li><a href="{% url 'configurer_email' %}">Email</a></li>
                         </ul>
                     </li>
@@ -74,8 +73,8 @@
         {% endif %}
         <div class="page-header">
             <div class="page-title">
-                <h4>Liste des Partenaires</h4>
-                <h6>Gérer les partenaires</h6>
+                <h3>Liste des Partenaires</h3>
+                <h4>Gérer les partenaires</h4>
             </div>
             <div class="page-btn">
                 <a href="{% url 'creer_partenaire' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}" alt="img">Ajouter</a>
@@ -293,104 +292,7 @@
                                                         {% csrf_token %}
                                                         <div class="card">
                                                             <div class="card-body">
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="entreprise">Entreprise</label>
-                                                                            <select class="select" name="entreprise" required>
-                                                                                <option value="">Selectionner...</option>
-                                                                                {% for entreprise in entreprises %}
-                                                                                    <option value="{{ entreprise.id }}">{{ entreprise.nom_entreprise }}</option>
-                                                                                {% endfor %}
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="dateDebutInput">Date de début</label>
-                                                                            <div class="input-groupicon" id="datetimepicker">
-                                                                                <input type="text" class="datetimepicker" id="dateDebutInput" name="date_debut" placeholder="JJ-MM-AAAA" required">
-                                                                                <div class="addonset">
-                                                                                    <img src="{% static 'assets/img/icons/calendars.svg' %}" alt="img">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="dateFinInput">Date de fin</label>
-                                                                            <div class="input-groupicon" id="datetimepicker">
-                                                                                <input type="text" class="datetimepicker" id="dateFinInput" name="date_fin" placeholder="JJ-MM-AAAA" required>
-                                                                                <div class="addonset">
-                                                                                    <img src="{% static 'assets/img/icons/calendars.svg' %}" alt="img">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="type_contrat">Type de contrat</label>
-                                                                            <input type="text" class="form-control" id="type_contrat" name="type_contrat" placeholder="Veuillez saisir le type du contrat" required>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="type_contrat">Fonction du salarié</label>
-                                                                            <input type="text" class="form-control" id="fonction_salarie" name="fonction_salarie" placeholder="Veuillez saisir le type du contrat" required>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="mode_paiement">Payement par</label>
-                                                                            <select class="select" name="mode_paiement" required>
-                                                                                <option value="">Selectionner...</option>
-                                                                                <option value="H">Heure</option>
-                                                                                <option value="J">Jour</option>
-                                                                                <option value="M">Mois</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- Par heure -->  
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="taux_horaire">Taux horaire</label>
-                                                                            <input type="number" class="form-control" id="taux_horaire" name="taux_horaire" placeholder="Veuillez saisir le montant payer par heure">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="heures_travail">Nombre d'heure de travail</label>
-                                                                            <input type="number" class="form-control" id="heures_travail" name="heures_travail" placeholder="Veuillez saisir d'heure de travail effectuer par jour">
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- Par jour -->  
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="jours_travail">Nombre de jour de travail</label>
-                                                                            <input type="number" class="form-control" id="jours_travail" name="jours_travail" placeholder="Veuillez saisir de jour de travail effectuer par mois">
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- Par mois -->  
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="salaire_mensuel">Salaire mensuel</label>
-                                                                            <input type="number" class="form-control" id="salaire_mensuel" name="salaire_mensuel" placeholder="Veuillez saisir le montant payer par mois">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="clauses">Clause</label>
-                                                                            <div id="clauses-container">
-                                                                                <input type="text" class="form-control mb-2" name="clauses" placeholder="Veuillez saisir les clauses du contrat" title="Clause">
-                                                                            </div>
-                                                                            <button type="button" id="add-clause" class="btn btn-primary">Ajouter une clause</button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-12">
-                                                                        <button type="submit" class="btn btn-primary me-2">Affecter</button>
-                                                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>
-                                                                    </div>
-                                                                </div>
+                                                                
                                                             </div>
                                                         </div>
                                                     </form>

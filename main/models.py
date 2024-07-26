@@ -56,6 +56,9 @@ class Admin(models.Model):
 class Entreprise(models.Model):
     compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
     nom_entreprise = models.CharField(max_length=100)
+    nom_agent_entreprise= models.CharField(max_length=100, default="Aucun")
+    prenom_agent_entreprise=models.CharField(max_length=200, default="Aucun")
+    poste_agent= models.CharField(max_length=200, default="Agent")
     secteurActivite = models.CharField(max_length=100)
     site_web = models.URLField(max_length=255, blank=True)
     

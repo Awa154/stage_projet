@@ -81,7 +81,7 @@
                 <h6>Profil entreprise</h6>
             </div>
         </div>
-        <form action="{% url 'profile_entreprise' %}" method="POST">
+        <form action="{% url 'profile_client' %}" method="POST">
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
@@ -109,6 +109,24 @@
                         <div class="form-group">
                             <label for="nom_entreprise">Nom de l'entreprise:</label>
                             <input type="text" id="nom_entreprise" name="nom_entreprise" value="{{ entreprise_info.nom_entreprise }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="nom_agent_entreprise">Nom agent de l'entreprise</label>
+                            <input type="text" class="form-control" id="nom_agent_entreprise" name="nom_agent_entreprise" value="{{ entreprise_info.nom_agent_entreprise }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="prenom_agent_entreprise">Prénom agent de l'entreprise</label>
+                            <input type="text" class="form-control" id="prenom_agent_entreprise" name="prenom_agent_entreprise" value="{{ entreprise_info.prenom_agent_entreprise }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="poste_agent">Poste occupé par l'agent</label>
+                            <input type="text" class="form-control" id="poste_agent" name="poste_agent" value="{{ entreprise_info.poste_agent }}">
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12">

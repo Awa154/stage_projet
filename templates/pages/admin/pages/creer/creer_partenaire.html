@@ -51,7 +51,6 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/settings.svg' %}" alt="img"><span> Paramètres</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="{% url 'general_configuration' %}">Général</a></li>
                             <li><a href="{% url 'configurer_email' %}">Email</a></li>
                         </ul>
                     </li>
@@ -84,6 +83,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-lg-12">
+                            <h4>Informations professionnels</h4> 
+                        </div>
                         <div class="col-sm-6 col-12">
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -102,9 +104,9 @@
                                 <input type="text" class="form-control" id="telephone" name="telephone" placeholder="Veuillez saisir le numéro de téléphone">
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="col-sm-6 col-12">
                             <div class="form-group">
-                                <label for="role">Rôle</label>
+                                <label for="role">Rôle dans le système</label>
                                 <select class="select" id="role-fields" name="role" required>
                                     <option value="">Aucun</option>
                                     {% for role in roles %}
@@ -113,10 +115,28 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="col-sm-6 col-12">
                             <div class="form-group">
                                 <label for="nom_entreprise">Nom de l'entreprise</label>
                                 <input type="text" class="form-control" id="nom_entreprise" name="nom_entreprise" placeholder="Veuillez saisir le nom de l'entreprise">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <div class="form-group">
+                                <label for="nom_agent_entreprise">Nom agent de l'entreprise</label>
+                                <input type="text" class="form-control" id="nom_agent_entreprise" name="nom_agent_entreprise" placeholder="Veuillez saisir le nom du représentant de l'entreprise">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <div class="form-group">
+                                <label for="prenom_agent_entreprise">Prénom agent de l'entreprise</label>
+                                <input type="text" class="form-control" id="prenom_agent_entreprise" name="prenom_agent_entreprise" placeholder="Veuillez saisir le prenom de l'agent de l'entreprise">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <div class="form-group">
+                                <label for="poste_agent">Poste occupé par l'agent</label>
+                                <input type="text" class="form-control" id="poste_agent" name="poste_agent" placeholder="Veuillez saisir le poste occupé par l'agent de l'entreprise">
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6 col-12">

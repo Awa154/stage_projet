@@ -49,7 +49,6 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/settings.svg' %}" alt="img"><span> Paramètres</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="{% url 'general_configuration' %}">Général</a></li>
                             <li><a href="{% url 'configurer_email' %}">Email</a></li>
                         </ul>
                     </li>
@@ -74,8 +73,8 @@
         {% endif %}
         <div class="page-header">
             <div class="page-title">
-                <h4>Liste des différents rôles</h4>
-                <h6>Gérer les rôles</h6>
+                <h3>Liste des différents rôles</h3>
+                <h4>Gérer les rôles</h4>
             </div>
             <div class="page-btn">
                 <a href="{% url 'creer_role' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}" alt="img">Ajouter</a>

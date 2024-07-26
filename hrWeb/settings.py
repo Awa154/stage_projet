@@ -138,12 +138,7 @@ MEDIA_ROOT= os.path.join(BASE_DIR,'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL=False
-EMAIL_HOST_USER = 'kemiadjiou071@gmail.com'
-EMAIL_HOST_PASSWORD = 'gelgaaodboqkxnkt'
+
 
 
 # Durée de la session en secondes (par exemple, 3600 secondes pour 1 heure)
@@ -165,3 +160,6 @@ CELERY_BEAT_SCHEDULE = {
 # Autres configurations Celery
 CELERY_TIMEZONE = 'UTC'
 CELERY_ENABLE_UTC = True
+
+# Chemin vers wkhtmltopdf
+WKHTMLTOPDF_CMD = os.path.join('C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
