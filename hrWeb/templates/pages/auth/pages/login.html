@@ -1,0 +1,27 @@
+{% extends 'layouts/baseauth.html' %}
+{% block content %}
+<div class="form login">
+    <a href="{% url 'home' %}" class="close-button text-dark"><i class="fas fa-times"></i></a>
+    {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    <span class="title">Connexion</span>
+    <form action="{% url 'connexion' %}" method="POST">
+        {% csrf_token %}
+        <div class="input-field">
+            <input type="text" name="nom_utilisateur" id="nom_utilisateur" placeholder="Entrer votre nom d'utilisateur" required>
+            <i class="uil uil-user"></i>
+        </div>
+        <div class="input-field">
+            <input type="password" name="mot_de_passe" id="mot_de_passe" class="password" placeholder="Entrer votre mot de passe" required>
+            <i class="uil uil-lock icon"></i>
+        </div>
+        <div class="checkbox-text">
+            <a href="{% url 'oublier_mot_de_passe' %}" class="text">Forgot password?</a>
+        </div>
+        <div class="input-field button">
+            <input type="submit" value="Se connecter">
+        </div>
+    </form>
+</div>
+{% endblock content %}
